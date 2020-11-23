@@ -88,7 +88,7 @@ class Game_of_life():
         pass
     
     def load_life(self):
-        Path = 'Patterns/Бесконечная система.txt'        #FIXME
+        Path = 'Patterns/Генератор шатлов.txt'        #FIXME
         data_list = []
         with open(Path, 'r') as f:
             for line in f:
@@ -165,7 +165,7 @@ def draw(Rect, color, space):
         polygon(space, color, [r[0:2], r[2:4], r[4:6], r[6:8]])
         
 X, Y = 1000, 550
-FPS = 5
+FPS = 15
 
 if __name__ == '__main__':
     game = Game_of_life(X, Y, FPS)
