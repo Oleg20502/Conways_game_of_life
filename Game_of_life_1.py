@@ -5,10 +5,10 @@ from pygame.draw import *
 
 WHITE = (255, 255, 255)
 RED = (225, 0, 50)
-BLACK = (0 , 0 , 0) 
-lightBLACK = (3,3,3)
+BLACK = (0, 0 , 0) 
+lightBLACK = (3, 3, 3)
 lightGreen = (0, 255, 0)
-BLUE  = (0,0,255, 20)
+BLUE  = (0, 0, 255, 20)
 GRAY = (125, 125, 125)
 lightBlue = (64, 128, 255)
 GREEN = (0, 200, 64, 20)
@@ -18,7 +18,7 @@ brown = (105, 82, 62, 255)
 darkorange3 = (205, 102, 0, 255)
 rosybrown5 = (159, 125, 125, 255)
 sandybrown = (244, 164, 96, 255)
-CLEAR = (0,0,0,0)
+CLEAR = (0, 0, 0, 0)
 
 
 class Game_of_life():
@@ -26,11 +26,16 @@ class Game_of_life():
         self.screen_x = screen_width
         self.screen_y = screen_height
         self.fps = fps
-        self.x_bias = 5
-        self.y_bias = 5
+        self.x_index_bias = 5
+        self.y_index_bias = 5
+        self.x_screen_bias = 0
+        self.y_screen_bias = 0
+        self.generation = 1
+        self.loop = 0
         
     def update_generation(self):
         # Подсчет соседей для каждой клетки кроме граничных
+        self.generation += 1
         m, n = self.cell_field.shape
         N = (self.cell_field[0:-2,0:-2] + self.cell_field[0:-2,1:-1] + self.cell_field[0:-2,2:] + self.cell_field[1:-1,0:-2] 
              + self.cell_field[1:-1,2:] + self.cell_field[2: ,0:-2] + self.cell_field[2: ,1:-1] + self.cell_field[2: ,2:])
@@ -70,10 +75,11 @@ class Game_of_life():
         pass
     
     def run(self):
-        self.update_scale()
-        self.update_generation()
-        self.broaden_field()
-        
+        if self.loop == 0:
+            self.update_scale()
+            self.update_generation()
+            self.is_generation_change()
+            self.broaden_field()
         pass
     
     def load_life(self):
@@ -95,11 +101,11 @@ class Game_of_life():
         #FIXME
         # Переводим индексы клеток в массиве в координаты для screen pygame-а
         m, n = self.index_coord.shape
-        x_bias_array = np.full(m, self.x_bias).reshape((m, 1))
-        y_bias_array = np.full(m, self.y_bias).reshape((m, 1))
+        x_bias_array = np.full(m, self.x_index_bias).reshape((m, 1))
+        y_bias_array = np.full(m, self.y_index_bias).reshape((m, 1))
         self.screen_coord = self.scale * (self.index_coord + np.hstack([x_bias_array, y_bias_array]))
-        self.index_coord[::2] += self.x_bias
-        self.index_coord[1::2] += self.y_bias
+        self.index_coord[::2] += self.x_index_bias
+        self.index_coord[1::2] += self.y_index_bias
         self.screen_coord = self.scale * self.index_coord
         pass
     
@@ -111,9 +117,11 @@ class Game_of_life():
         index_rect = np.hstack((indeses, indeses[:,0].reshape((m,1))+1, 
                                 indeses[:,1].reshape((m,1)), indeses+1, 
                                  indeses[:,0].reshape((m,1)), indeses[:,1].reshape((m,1))+1))
-        index_rect[:,::2] += self.x_bias
-        index_rect[:,1::2] += self.y_bias
-        self.screen_rect = self.scale * index_rect
+        index_rect[:, ::2] += self.x_index_bias
+        index_rect[:, 1::2] += self.y_index_bias
+        self.screen_rect = np.zeros(np.shape(index_rect))
+        self.screen_rect[:, ::2] = self.scale * index_rect[:, ::2] + self.x_screen_bias
+        self.screen_rect[:, 1::2] = self.scale * index_rect[:, 1::2] + self.y_screen_bias
         return self.screen_rect
 
     def broaden_field(self):
@@ -123,17 +131,19 @@ class Game_of_life():
         m, n = np.shape(self.cell_field)
         if a > 0:
             self.cell_field = np.vstack([np.zeros((1, n)), self.cell_field])
-            self.y_bias -= 1
+            self.y_index_bias -= 1
             m += 1
         if b > 0:
             self.cell_field = np.vstack([self.cell_field, np.zeros((1, n))])
             m += 1
         if c > 0:
-            self.x_bias -= 1
+            self.x_index_bias -= 1
             self.cell_field = np.hstack([np.zeros((m, 1)), self.cell_field])
         if d > 0:
             self.cell_field = np.hstack([self.cell_field, np.zeros((m, 1))])
-    
+    def is_generation_change(self):
+        if np.allclose(self.cell_field, self.old_cell_field):
+            self.loop = 1
         
 ###################
 #     VUSUALISATION
@@ -159,12 +169,10 @@ if __name__ == '__main__':
     pg.display.update()
     clock = pg.time.Clock()
     finished = False
-    generation = 1
     while not finished:
         clock.tick(FPS)
         game.run()
-        generation += 1
-        print('Поколение:', generation)
+        print('Поколение:', game.generation)
         draw(game.rect_coordinetes(), (225, 0, 50), screen)
         for event in pg.event.get():
             if event.type == pg.QUIT:
