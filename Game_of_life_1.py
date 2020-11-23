@@ -40,7 +40,6 @@ class Game_of_life():
         self.new_cell_field = np.zeros((m, n))
         self.new_cell_field[1:-1,1:-1][birth | survive] = 1
         self.cell_field, self.old_cell_field = self.new_cell_field, self.cell_field
-        print(self.cell_field.shape)
         
     def create_random_life(self):
         self.cell_field = np.zeros((self.field_height, self.field_width))
