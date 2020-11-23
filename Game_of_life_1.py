@@ -41,9 +41,6 @@ class Game_of_life():
         # Применение правил
         birth = (N == 3) & (self.cell_field[1:-1,1:-1] == 0)
         survive = ((N == 2) | (N == 3)) & (self.cell_field[1:-1,1:-1] == 1)
-        self.cell_field[...] = 0
-        self.cell_field[1:-1,1:-1][birth | survive] = 1
-        #print(self.cell_field)       
         self.new_cell_field = np.zeros((m, n))
         self.new_cell_field[1:-1,1:-1][birth | survive] = 1
         self.old_cell_field = self.cell_field
@@ -71,12 +68,13 @@ class Game_of_life():
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0], 
+                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])            
             self.field_height, self.field_width = np.shape(self.cell_field)
         elif regime == 2:
             self.load_life()
-            self.field_width, self.field_height = 40, 40
+            m, n = self.cell_field.shape
+            self.field_width, self.field_height = m + 40, n + 40
         self.update_scale()
         pass
     
@@ -86,7 +84,7 @@ class Game_of_life():
             #self.update_scale()
             self.broaden_field()
             self.update_generation()
-            #self.is_generation_change()
+            self.is_generation_change()
         pass
     
     def load_life(self):
@@ -156,7 +154,6 @@ class Game_of_life():
     def is_generation_change(self):
         if np.allclose(self.cell_field, self.old_cell_field):
             self.loop = 1
-            print(1)
         
 ###################
 #     VUSUALISATION
@@ -172,7 +169,7 @@ FPS = 5
 
 if __name__ == '__main__':
     game = Game_of_life(X, Y, FPS)
-    game.setup(1)
+    game.setup(2)
     
     pg.init()
     screen = pg.display.set_mode((X , Y))
