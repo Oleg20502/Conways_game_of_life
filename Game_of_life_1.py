@@ -35,16 +35,19 @@ class Game_of_life():
         
     def update_generation(self):
         # Подсчет соседей для каждой клетки кроме граничных
-        self.generation += 1
         m, n = self.cell_field.shape
         N = (self.cell_field[0:-2,0:-2] + self.cell_field[0:-2,1:-1] + self.cell_field[0:-2,2:] + self.cell_field[1:-1,0:-2] 
              + self.cell_field[1:-1,2:] + self.cell_field[2: ,0:-2] + self.cell_field[2: ,1:-1] + self.cell_field[2: ,2:])
         # Применение правил
         birth = (N == 3) & (self.cell_field[1:-1,1:-1] == 0)
         survive = ((N == 2) | (N == 3)) & (self.cell_field[1:-1,1:-1] == 1)
+        self.cell_field[...] = 0
+        self.cell_field[1:-1,1:-1][birth | survive] = 1
+        #print(self.cell_field)       
         self.new_cell_field = np.zeros((m, n))
         self.new_cell_field[1:-1,1:-1][birth | survive] = 1
-        self.cell_field, self.old_cell_field = self.new_cell_field, self.cell_field
+        self.old_cell_field = self.cell_field
+        self.cell_field = self.new_cell_field
         
     def create_random_life(self):
         self.cell_field = np.zeros((self.field_height, self.field_width))
@@ -56,7 +59,7 @@ class Game_of_life():
             self.field_height = 100
             self.field_width = 200
             self.create_random_life()
-        else:
+        elif regime == 3:
             self.cell_field = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                                         [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                                         [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
@@ -69,30 +72,38 @@ class Game_of_life():
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0], 
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])            
             self.field_height, self.field_width = np.shape(self.cell_field)
+        elif regime == 2:
+            self.load_life()
+            self.field_width, self.field_height = 40, 40
         self.update_scale()
         pass
     
     def run(self):
         if self.loop == 0:
-            self.update_scale()
-            self.update_generation()
-            self.is_generation_change()
+            self.generation += 1
+            #self.update_scale()
             self.broaden_field()
+            self.update_generation()
+            #self.is_generation_change()
         pass
     
     def load_life(self):
-        Path = 'some name'        #FIXME
+        Path = 'Patterns/Бесконечная система.txt'        #FIXME
+        data_list = []
         with open(Path, 'r') as f:
-            f.readlines()
-            self.cell_field = f
+            for line in f:
+                data_list.append(line.split(','))
+            self.cell_field = np.asarray(data_list, dtype='int')
+            print(self.cell_field)
         
         def handle_events(self):
         # FIXME
             pass
     
     def update_scale(self):
+        # FIXME
         self.scale = int(min(self.screen_x / (1.0001 * self.field_width),
                              self.screen_y / (1.0001 * self.field_height)))
     
@@ -141,9 +152,11 @@ class Game_of_life():
             self.cell_field = np.hstack([np.zeros((m, 1)), self.cell_field])
         if d > 0:
             self.cell_field = np.hstack([self.cell_field, np.zeros((m, 1))])
+
     def is_generation_change(self):
         if np.allclose(self.cell_field, self.old_cell_field):
             self.loop = 1
+            print(1)
         
 ###################
 #     VUSUALISATION
