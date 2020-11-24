@@ -6,7 +6,8 @@
 Правая кнопка мыши - добавить клетку;
 Левая кнопка мыши - перемещение изображения;
 Стрелка вверх - увеличить масштаб;
-Стрелка вниз - уменьшить масштаб.
+Стрелка вниз - уменьшить масштаб;
+Пробел - пауза.
 
 
 '''
@@ -14,7 +15,7 @@
 
 import numpy as np
 import pygame as pg
-import time as t
+#import time as t
 from pygame.draw import polygon
 
 WHITE = (255, 255, 255)
@@ -36,15 +37,14 @@ CLEAR = (0, 0, 0, 0)
 
 
 class Game_of_life():
-    def __init__(self, screen_width, screen_height, fps):
+    def __init__(self, screen_width, screen_height):
         self.screen_x = screen_width
         self.screen_y = screen_height
-        self.fps = fps
         self.scale = 0
-        self.x_index_bias = 1
-        self.y_index_bias = 1
-        self.x_screen_bias = 0
-        self.y_screen_bias = 0
+        self.x_index_bias = 0
+        self.y_index_bias = 0
+        self.x_screen_bias = screen_width // 3
+        self.y_screen_bias = screen_height // 3
         self.generation = 1
         self.loop = 0
         
@@ -110,10 +110,6 @@ class Game_of_life():
                 data_list.append(line.split(','))
             self.cell_field = np.asarray(data_list, dtype='int')
         self.broaden_field(0)
-        
-        def handle_events(self):
-        # FIXME
-            pass
     
     def set_scale(self):
         # FIXME
@@ -168,9 +164,10 @@ class Game_of_life():
             
     def add_cell(self, x, y):
         m, n = np.shape(self.cell_field)
-        x_index_coord = round((x - self.x_screen_bias) / self.scale - self.x_index_bias)
-        y_index_coord = round((y - self.y_screen_bias) / self.scale - self.y_index_bias)
-        if m > y_index_coord and n > x_index_coord:
+        x_index_coord = round((x - self.x_screen_bias) // self.scale - self.x_index_bias)
+        y_index_coord = round((y - self.y_screen_bias) // self.scale - self.y_index_bias)
+        if m > y_index_coord >= 0 and n > x_index_coord >= 0:
+            #self.cell_field[y_index_coord, x_index_coord] = not self.cell_field[y_index_coord, x_index_coord]
             self.cell_field[y_index_coord, x_index_coord] = 1
 
     def is_generation_change(self):
@@ -187,7 +184,8 @@ def draw(Rect, color, space):
         polygon(space, color, [r[0:2], r[2:4], r[4:6], r[6:8]])
         
 X, Y = 1000, 550
-FPS = 60
+start_FPS = 60
+max_FPS = 250
 T = 15
 x_start, y_start = 0, 0
 x_cur, y_cur = 0, 0
@@ -197,11 +195,14 @@ arrow_down_pressed = 0
 paint = 0
 x_paint = 0
 y_paint = 0
-period = round(FPS / T)
+
+def count_period(fps):
+    return round(fps / T)
+#period = round(FPS / T)
 
 
 if __name__ == '__main__':
-    game = Game_of_life(X, Y, FPS)
+    game = Game_of_life(X, Y)
     game.setup(2)
     
     pg.init()
@@ -211,16 +212,16 @@ if __name__ == '__main__':
     
     pg.display.update()
     clock = pg.time.Clock()
-    
+    FPS = start_FPS
     finished = False
-    play = 1
+    play1, play2 = 1, 1
     t = 0
     
     while not finished:
         t += 1
+        period = count_period(FPS)
         clock.tick(FPS)
         for event in pg.event.get():
-           # print(pg.mouse.get_pressed())
             if event.type == pg.QUIT:
                 finished = True
                 
@@ -229,7 +230,8 @@ if __name__ == '__main__':
                     track_mouse = 1
                     x_start, y_start = pg.mouse.get_pos()
                 if event.button  == 1:
-                    play = 0
+                    play2 = 0
+                    FPS = max_FPS
                     paint = 1
                 if event.button == 5:
                     print(event)
@@ -238,7 +240,8 @@ if __name__ == '__main__':
                 if event.button == 3:
                     track_mouse = 0
                 if event.button == 1:
-                    play = 1
+                    play2 = 1
+                    FPS = start_FPS
                     paint = 0
                 if event.button == 4:
                     print(event)
@@ -248,28 +251,30 @@ if __name__ == '__main__':
                     arrow_up_pressed = 1
                 elif event.key == pg.K_DOWN:
                     arrow_down_pressed = 1
+                if event.key == pg.K_SPACE:
+                    play1 = not play1
                     
             elif event.type == pg.KEYUP:
                 if event.key == pg.K_UP:
                     arrow_up_pressed = 0
                 elif event.key == pg.K_DOWN:
                     arrow_down_pressed = 0
-                    
+
         if track_mouse == 1:
             x_cur, y_cur = pg.mouse.get_pos()
             game.x_screen_bias += x_cur - x_start
             game.y_screen_bias += y_cur - y_start
             x_start, y_start = x_cur, y_cur
         if arrow_up_pressed:
-            game.scale += 1
+            game.scale *= 1.1
         if arrow_down_pressed:
-            game.scale -= 1 
-        if paint:
+            game.scale *= 0.9 
+        if paint and (not play1 or not play2):
             x_paint , y_paint = pg.mouse.get_pos()
             game.add_cell(x_paint, y_paint)
-                
+            
         if t % period == 0:            
-            game.run(play)
+            game.run(play1 and play2)
             #print('Поколение:', game.generation)
             draw(game.rect_coordinetes(), (225, 0, 50), screen)
                 
