@@ -26,8 +26,9 @@ class Game_of_life():
         self.screen_x = screen_width
         self.screen_y = screen_height
         self.fps = fps
-        self.x_index_bias = 5
-        self.y_index_bias = 5
+        self.scale = 0
+        self.x_index_bias = 1
+        self.y_index_bias = 1
         self.x_screen_bias = 0
         self.y_screen_bias = 0
         self.generation = 1
@@ -74,21 +75,21 @@ class Game_of_life():
         elif regime == 2:
             self.load_life()
             m, n = self.cell_field.shape
-            self.field_width, self.field_height = m + 40, n + 40
-        self.update_scale()
+            self.field_width, self.field_height = m + 10, n + 10
+        self.set_scale()
         pass
     
-    def run(self):
-        if self.loop == 0:
-            self.generation += 1
-            #self.update_scale()
-            self.broaden_field()
-            self.update_generation()
-            self.is_generation_change()
+    def run(self, run):
+        if run:
+            if self.loop == 0:
+                self.generation += 1
+                self.broaden_field()
+                self.update_generation()
+                self.is_generation_change()
         pass
     
     def load_life(self):
-        Path = 'Patterns/Бесконечная система.txt'        #FIXME
+        Path = 'Patterns/Gosper_Gun.txt'        #FIXME
         data_list = []
         with open(Path, 'r') as f:
             for line in f:
@@ -100,7 +101,7 @@ class Game_of_life():
         # FIXME
             pass
     
-    def update_scale(self):
+    def set_scale(self):
         # FIXME
         self.scale = int(min(self.screen_x / (self.field_width),
                              self.screen_y / (self.field_height)))
@@ -171,6 +172,10 @@ x_cur, y_cur = 0, 0
 track_mouse = 0
 arrow_up_pressed = 0
 arrow_down_pressed = 0
+paint = 0
+x_paint = 0
+y_paint = 0
+
 
 if __name__ == '__main__':
     game = Game_of_life(X, Y, FPS)
@@ -183,52 +188,61 @@ if __name__ == '__main__':
     
     pg.display.update()
     clock = pg.time.Clock()
+    
     finished = False
-    play = True
+    play = 1
+    
     while not finished:
         clock.tick(FPS)
         for event in pg.event.get():
            # print(pg.mouse.get_pressed())
             if event.type == pg.QUIT:
                 finished = True
+                
             elif event.type == pg.MOUSEBUTTONDOWN:
-                if event.button == 1:
+                if event.button == 3:
                     track_mouse = 1
                     x_start, y_start = pg.mouse.get_pos()
-                elif event.button  == 3:
+                if event.button  == 1:
                     play = not play
-                elif event.button == 5:
+                    paint = 1
+                if event.button == 5:
                     print(event)
+                    
             elif event.type == pg.MOUSEBUTTONUP:
-                if event.button == 1:
+                if event.button == 3:
                     track_mouse = 0
-                elif event.button == 4:
+                if event.button == 4:
                     print(event)
-            elif event.type == pg.KEYDOWN:
+                    
+            if event.type == pg.KEYDOWN:
                 if event.key == pg.K_UP:
                     arrow_up_pressed = 1
                 elif event.key == pg.K_DOWN:
                     arrow_down_pressed = 1
+                    
             elif event.type == pg.KEYUP:
                 if event.key == pg.K_UP:
                     arrow_up_pressed = 0
                 elif event.key == pg.K_DOWN:
                     arrow_down_pressed = 0
                     
-        if play:
-            game.run()
-            #print('Поколение:', game.generation)
-            draw(game.rect_coordinetes(), (225, 0, 50), screen)
-            if track_mouse == 1:
-                x_cur, y_cur = pg.mouse.get_pos()
-                game.x_screen_bias += x_cur - x_start
-                game.y_screen_bias += y_cur - y_start
-                x_start, y_start = x_cur, y_cur
-            if arrow_up_pressed:
-                game.scale -= 1
-            if arrow_down_pressed:
-                game.scale += 1
+        game.run(play)
+        print('Поколение:', game.generation)
+        draw(game.rect_coordinetes(), (225, 0, 50), screen)
+        
+        
+        if track_mouse == 1:
+            x_cur, y_cur = pg.mouse.get_pos()
+            game.x_screen_bias += x_cur - x_start
+            game.y_screen_bias += y_cur - y_start
+            x_start, y_start = x_cur, y_cur
+        if arrow_up_pressed:
+            game.scale += 1
+        if arrow_down_pressed:
+            game.scale -= 1 
+            
                 
-            pg.display.update()
-            screen.fill(WHITE)
+        pg.display.update()
+        screen.fill(WHITE)
     pg.quit()
