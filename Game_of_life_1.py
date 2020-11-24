@@ -88,7 +88,7 @@ class Game_of_life():
         pass
     
     def load_life(self):
-        Path = 'Patterns/Шатл.txt'        #FIXME
+        Path = 'Patterns/Бесконечная система.txt'        #FIXME
         data_list = []
         with open(Path, 'r') as f:
             for line in f:
@@ -169,6 +169,9 @@ FPS = 15
 x_start, y_start = 0, 0
 x_cur, y_cur = 0, 0
 track_mouse = 0
+arrow_up_pressed = 0
+arrow_down_pressed = 0
+
 if __name__ == '__main__':
     game = Game_of_life(X, Y, FPS)
     game.setup(2)
@@ -185,7 +188,7 @@ if __name__ == '__main__':
     while not finished:
         clock.tick(FPS)
         for event in pg.event.get():
-            print(pg.mouse.get_pressed())
+           # print(pg.mouse.get_pressed())
             if event.type == pg.QUIT:
                 finished = True
             elif event.type == pg.MOUSEBUTTONDOWN:
@@ -199,8 +202,18 @@ if __name__ == '__main__':
             elif event.type == pg.MOUSEBUTTONUP:
                 if event.button == 1:
                     track_mouse = 0
-                elif event.button == 5 or 4:
+                elif event.button == 4:
                     print(event)
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_UP:
+                    arrow_up_pressed = 1
+                elif event.key == pg.K_DOWN:
+                    arrow_down_pressed = 1
+            elif event.type == pg.KEYUP:
+                if event.key == pg.K_UP:
+                    arrow_up_pressed = 0
+                elif event.key == pg.K_DOWN:
+                    arrow_down_pressed = 0
                     
         if play:
             game.run()
@@ -211,6 +224,11 @@ if __name__ == '__main__':
                 game.x_screen_bias += x_cur - x_start
                 game.y_screen_bias += y_cur - y_start
                 x_start, y_start = x_cur, y_cur
+            if arrow_up_pressed:
+                game.scale -= 1
+            if arrow_down_pressed:
+                game.scale += 1
+                
             pg.display.update()
             screen.fill(WHITE)
     pg.quit()
