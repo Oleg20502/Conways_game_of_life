@@ -1,4 +1,17 @@
 
+'''
+
+Игра Жизнь
+
+Правая кнопка мыши - пауза;
+Левая кнопка мыши - перемещение изображения;
+Стрелка вверх - увеличить масштаб;
+Стрелка вниз - уменьшить масштаб.
+
+
+'''
+
+
 import numpy as np
 import pygame as pg
 from pygame.draw import *
@@ -212,6 +225,8 @@ if __name__ == '__main__':
             elif event.type == pg.MOUSEBUTTONUP:
                 if event.button == 3:
                     track_mouse = 0
+                if event.button == 1:
+                    paint = 0
                 if event.button == 4:
                     print(event)
                     
