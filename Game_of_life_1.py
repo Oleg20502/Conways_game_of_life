@@ -180,11 +180,9 @@ if __name__ == '__main__':
     pg.display.update()
     clock = pg.time.Clock()
     finished = False
+    play = True
     while not finished:
         clock.tick(FPS)
-        game.run()
-        print('Поколение:', game.generation)
-        draw(game.rect_coordinetes(), (225, 0, 50), screen)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 finished = True
@@ -192,14 +190,20 @@ if __name__ == '__main__':
                 if event.button == 1:
                     track_mouse = 1
                     x_start, y_start = pg.mouse.get_pos()
+                elif event.button  == 3:
+                    play = not play
             elif event.type == pg.MOUSEBUTTONUP:
                 if event.button == 1:
                     track_mouse = 0
-        if track_mouse == 1:
-            x_cur, y_cur = pg.mouse.get_pos()
-            game.x_screen_bias += x_cur - x_start
-            game.y_screen_bias += y_cur - y_start
-            x_start, y_start = x_cur, y_cur
-        pg.display.update()
-        screen.fill(WHITE)
+        if play:
+            game.run()
+            print('Поколение:', game.generation)
+            draw(game.rect_coordinetes(), (225, 0, 50), screen)
+            if track_mouse == 1:
+                x_cur, y_cur = pg.mouse.get_pos()
+                game.x_screen_bias += x_cur - x_start
+                game.y_screen_bias += y_cur - y_start
+                x_start, y_start = x_cur, y_cur
+            pg.display.update()
+            screen.fill(WHITE)
     pg.quit()
