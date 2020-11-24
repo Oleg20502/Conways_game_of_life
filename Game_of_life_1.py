@@ -88,12 +88,13 @@ class Game_of_life():
         pass
     
     def load_life(self):
-        Path = 'Patterns/Конечная система.txt'        #FIXME
+        Path = 'Patterns/Шатл.txt'        #FIXME
         data_list = []
         with open(Path, 'r') as f:
             for line in f:
                 data_list.append(line.split(','))
             self.cell_field = np.asarray(data_list, dtype='int')
+        self.broaden_field(0)
         
         def handle_events(self):
         # FIXME
@@ -132,10 +133,10 @@ class Game_of_life():
         self.screen_rect[:, 1::2] = self.scale * index_rect[:, 1::2] + self.y_screen_bias
         return self.screen_rect
 
-    def broaden_field(self):
+    def broaden_field(self, border = 1):
         # Расширяеет поле, т.е. массив клеток, если они подобрались близко к границам
-        a, b = np.sum(self.cell_field[1, :]), np.sum(self.cell_field[-2, :])
-        c, d = np.sum(self.cell_field[:, 1]), np.sum(self.cell_field[:, -2])
+        a, b = np.sum(self.cell_field[border, :]), np.sum(self.cell_field[-1-border, :])
+        c, d = np.sum(self.cell_field[:, border]), np.sum(self.cell_field[:, -1-border])
         m, n = np.shape(self.cell_field)
         if a > 0:
             self.cell_field = np.vstack([np.zeros((1, n)), self.cell_field])
@@ -170,7 +171,7 @@ x_cur, y_cur = 0, 0
 track_mouse = 0
 if __name__ == '__main__':
     game = Game_of_life(X, Y, FPS)
-    game.setup(1)
+    game.setup(2)
     
     pg.init()
     screen = pg.display.set_mode((X , Y))
@@ -184,6 +185,7 @@ if __name__ == '__main__':
     while not finished:
         clock.tick(FPS)
         for event in pg.event.get():
+            print(pg.mouse.get_pressed())
             if event.type == pg.QUIT:
                 finished = True
             elif event.type == pg.MOUSEBUTTONDOWN:
@@ -192,12 +194,17 @@ if __name__ == '__main__':
                     x_start, y_start = pg.mouse.get_pos()
                 elif event.button  == 3:
                     play = not play
+                elif event.button == 5:
+                    print(event)
             elif event.type == pg.MOUSEBUTTONUP:
                 if event.button == 1:
                     track_mouse = 0
+                elif event.button == 5 or 4:
+                    print(event)
+                    
         if play:
             game.run()
-            print('Поколение:', game.generation)
+            #print('Поколение:', game.generation)
             draw(game.rect_coordinetes(), (225, 0, 50), screen)
             if track_mouse == 1:
                 x_cur, y_cur = pg.mouse.get_pos()
