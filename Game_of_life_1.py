@@ -190,12 +190,11 @@ class Buttons:
         mouse = pg.mouse.get_pos()
         click = pg.mouse.get_pressed()
 
-        if x < mouse[0] < x + self.width:
-            if y < mouse[1] < y + self.height:
-                pg.draw.rect(screen, (29, 154, 98), (x, y, self.width, self.height))
+        if x < mouse[0] < x + self.width and y < mouse[1] < y + self.height:
+            pg.draw.rect(screen, (30, 150, 100), (x, y, self.width, self.height))
 
-                if click[0] == 1:
-                    return i
+            if click[0] == 1:
+                return i
 
 
         print_text(text, x + 10, y + 10)
