@@ -182,21 +182,19 @@ class Game_of_life():
 
 
 class Buttons:
+
     def __init__(self, width, height):
         self.width = width
         self.height = height
+        self.regim = None
 
     def draw_and_action(self, x, y, text, i):
         mouse = pg.mouse.get_pos()
         click = pg.mouse.get_pressed()
-
         if x < mouse[0] < x + self.width and y < mouse[1] < y + self.height:
             pg.draw.rect(screen, (30, 150, 100), (x, y, self.width, self.height))
-
             if click[0] == 1:
-                return i
-
-
+                self.regim = i
         print_text(text, x + 8, y + 8)
 
 
@@ -287,7 +285,7 @@ if __name__ == '__main__':
 
 
 
-    game.setup(i)
+    game.setup(button.regim)
 
     if menu == 0:
         while not finished:
