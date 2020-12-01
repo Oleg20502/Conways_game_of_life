@@ -173,7 +173,8 @@ class Game_of_life():
     def is_generation_change(self):
         if np.allclose(self.cell_field, self.old_cell_field):
             self.loop = 1
-        
+
+
 ###################
 #     VUSUALISATION
 ###################
@@ -182,6 +183,13 @@ def draw(Rect, color, space):
     # Рисуем квадратик,соответствующий каждой клетке
     for r in Rect:
         polygon(space, color, [r[0:2], r[2:4], r[4:6], r[6:8]])
+
+
+def print_text(txt, x, y, font_colour = (0, 0, 0), font_type = 'text.ttf', font_size = 35):
+        # Рисуем текст чёрного цвета, размера 35, с координатами x, y
+        font_type = pg.font.Font(font_type, font_size)
+        text = font_type.render(txt, True, font_colour)
+        screen.blit(text, (x, y))
         
 X, Y = 1000, 550
 start_FPS = 60
@@ -222,69 +230,80 @@ if __name__ == '__main__':
     finished = False
     play1, play2 = 1, 1
     t = 0
-    
-    while not finished:
-        t += 1
-        period = count_period(FPS)
+    menu = 1
+
+    while menu == 1:
         clock.tick(FPS)
         for event in pg.event.get():
-            if event.type == pg.QUIT:
-                finished = True
-                
-            elif event.type == pg.MOUSEBUTTONDOWN:
-                if event.button == 3:
-                    track_mouse = 1
-                    x_start, y_start = pg.mouse.get_pos()
-                if event.button  == 1:
-                    play2 = 0
-                    FPS = max_FPS
-                    paint = 1
-                if event.button == 5:
-                    print(event)
-                    
-            elif event.type == pg.MOUSEBUTTONUP:
-                if event.button == 3:
-                    track_mouse = 0
-                if event.button == 1:
-                    play2 = 1
-                    FPS = start_FPS
-                    paint = 0
-                if event.button == 4:
-                    print(event)
-                    
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_UP:
-                    arrow_up_pressed = 1
-                elif event.key == pg.K_DOWN:
-                    arrow_down_pressed = 1
-                if event.key == pg.K_SPACE:
-                    play1 = not play1
-                    
-            elif event.type == pg.KEYUP:
-                if event.key == pg.K_UP:
-                    arrow_up_pressed = 0
-                elif event.key == pg.K_DOWN:
-                    arrow_down_pressed = 0
+            if event.type != pg.MOUSEBUTTONDOWN:
+                pg.display.update()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                menu = 0
+            print_text('Нажмите в любом месте для начала игры', X/4, Y/4)
 
-        if track_mouse == 1:
-            x_cur, y_cur = pg.mouse.get_pos()
-            game.x_screen_bias += x_cur - x_start
-            game.y_screen_bias += y_cur - y_start
-            x_start, y_start = x_cur, y_cur
-        if arrow_up_pressed:
-            game.scale *= 1.1
-        if arrow_down_pressed:
-            game.scale *= 0.9 
-        if paint and (not play1 or not play2):
-            x_paint , y_paint = pg.mouse.get_pos()
-            game.add_cell(x_paint, y_paint)
-            
-        if t % period == 0:            
-            game.run(play1 and play2)
-            #print('Поколение:', game.generation)
-            draw(game.rect_coordinetes(), (225, 0, 50), screen)
+    if menu == 0:
+        while not finished:
+            t += 1
+            period = count_period(FPS)
+            clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    finished = True
                 
-            pg.display.update()
-            screen.fill(WHITE)
+                elif event.type == pg.MOUSEBUTTONDOWN:
+                    if event.button == 3:
+                        track_mouse = 1
+                        x_start, y_start = pg.mouse.get_pos()
+                    if event.button  == 1:
+                        play2 = 0
+                        FPS = max_FPS
+                        paint = 1
+                    if event.button == 5:
+                        print(event)
+                    
+                elif event.type == pg.MOUSEBUTTONUP:
+                    if event.button == 3:
+                        track_mouse = 0
+                    if event.button == 1:
+                        play2 = 1
+                        FPS = start_FPS
+                        paint = 0
+                    if event.button == 4:
+                        print(event)
+                    
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_UP:
+                        arrow_up_pressed = 1
+                    elif event.key == pg.K_DOWN:
+                        arrow_down_pressed = 1
+                    if event.key == pg.K_SPACE:
+                        play1 = not play1
+                    
+                elif event.type == pg.KEYUP:
+                    if event.key == pg.K_UP:
+                        arrow_up_pressed = 0
+                    elif event.key == pg.K_DOWN:
+                        arrow_down_pressed = 0
+
+            if track_mouse == 1:
+                x_cur, y_cur = pg.mouse.get_pos()
+                game.x_screen_bias += x_cur - x_start
+                game.y_screen_bias += y_cur - y_start
+                x_start, y_start = x_cur, y_cur
+            if arrow_up_pressed:
+                game.scale *= 1.1
+            if arrow_down_pressed:
+                game.scale *= 0.9
+            if paint and (not play1 or not play2):
+                x_paint , y_paint = pg.mouse.get_pos()
+                game.add_cell(x_paint, y_paint)
+            
+            if t % period == 0:
+                game.run(play1 and play2)
+                #print('Поколение:', game.generation)
+                draw(game.rect_coordinetes(), (225, 0, 50), screen)
+                
+                pg.display.update()
+                screen.fill(WHITE)
             
     pg.quit()
