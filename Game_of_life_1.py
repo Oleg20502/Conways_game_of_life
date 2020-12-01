@@ -190,7 +190,8 @@ def print_text(txt, x, y, font_colour = (0, 0, 0), font_type = 'text.ttf', font_
         font_type = pg.font.Font(font_type, font_size)
         text = font_type.render(txt, True, font_colour)
         screen.blit(text, (x, y))
-        
+
+
 X, Y = 1000, 550
 start_FPS = 60
 max_FPS = 250
@@ -231,6 +232,8 @@ if __name__ == '__main__':
     play1, play2 = 1, 1
     t = 0
     menu = 1
+    fon = pg.image.load('fon.jpg')
+
 
     while menu == 1:
         clock.tick(FPS)
@@ -239,7 +242,8 @@ if __name__ == '__main__':
                 pg.display.update()
             if event.type == pg.MOUSEBUTTONDOWN:
                 menu = 0
-            print_text('Нажмите в любом месте для начала игры', X/4, Y/4)
+            screen.blit(fon, (0, 0))
+            print_text('Нажмите в любом месте для начала игры', X / 4, Y / 4)
 
     if menu == 0:
         while not finished:
