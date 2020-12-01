@@ -212,7 +212,6 @@ def count_period(fps):
 
 if __name__ == '__main__':
     game = Game_of_life(X, Y)
-    game.setup(2)
     
     pg.init()
     screen = pg.display.set_mode((X , Y))
@@ -238,12 +237,24 @@ if __name__ == '__main__':
     while menu == 1:
         clock.tick(FPS)
         for event in pg.event.get():
-            if event.type != pg.MOUSEBUTTONDOWN:
+            if event.type != pg.KEYDOWN:
                 pg.display.update()
-            if event.type == pg.MOUSEBUTTONDOWN:
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_1:
+                    i = 1
+                if event.key == pg.K_2:
+                    i = 2
+                if event.key == pg.K_3:
+                    i = 3
                 menu = 0
+
+
             screen.blit(fon, (0, 0))
-            print_text('Нажмите в любом месте для начала игры', X / 4, Y / 4)
+            print_text('Нажмите 1 для запука произвольно поля', X / 4, Y / 4)
+            print_text('Нажмите 2 для загруженного из файла поля', X / 4, (Y / 4 + 50))
+            print_text('Нажмите 3 для рислвания своего поля', X / 4, (Y / 4 + 110))
+
+    game.setup(i)
 
     if menu == 0:
         while not finished:
