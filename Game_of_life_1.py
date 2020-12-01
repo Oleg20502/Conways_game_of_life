@@ -209,7 +209,8 @@ if __name__ == '__main__':
     screen = pg.display.set_mode((X , Y))
     clock = pg.time.Clock()  
     screen.fill(WHITE)
-    
+    pg.display.set_caption('Conways_game_of_life')
+
     pg.display.update()
     clock = pg.time.Clock()
     FPS = start_FPS
