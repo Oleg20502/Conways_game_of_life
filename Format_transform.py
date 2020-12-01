@@ -1,8 +1,5 @@
 import numpy as np
 
-Path = 'diagonal.rle'
-#Path = 'Pattern_ex.txt'
-
 def make_number(a):
     num = 0
     l = len(a)
@@ -29,12 +26,8 @@ def sym_change(a):
         change = 1
     return change
 
-
-with open(Path, 'r') as f:
-    data = f.read()
-#print(data)
-def load_and_transform(Path):  
-    with open(Path, 'r') as f:
+def load_and_transform(path):  
+    with open(path, 'r') as f:
         data = []
         for line in f:
             if line[0] != '#' and line[0] != 'x':
@@ -56,15 +49,18 @@ def load_and_transform(Path):
                             print('!')
                         else:
                             print('That:', line[i])''' 
-    data_list = []
-    line_list = []
+    data_list = [[0]]
+    line_list = [0]
     for d in data:
         if d != '$':
             line_list.append(d)
         elif d == '$':
+            line_list.append(0)
             data_list.append(line_list)
-            line_list = []
+            line_list = [0]
+    line_list.append(0)
     data_list.append(line_list)
+    data_list.append([0])
      
     lens = [len(l) for l in data_list]
     maxlen = max(lens)

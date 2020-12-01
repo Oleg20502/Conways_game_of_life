@@ -14,6 +14,7 @@
 import numpy as np
 import pygame as pg
 #import time as t
+from Format_transform import load_and_transform
 from pygame.draw import polygon
 
 WHITE = (255, 255, 255)
@@ -39,23 +40,23 @@ class Game_of_life():
         self.screen_x = screen_width
         self.screen_y = screen_height
         self.scale = 0
-        self.celll_field = None
+        self.cell_field = None
         self.field = None
         self.x_index_bias = 0
         self.y_index_bias = 0
-        self.x_screen_bias = screen_width // 3
-        self.y_screen_bias = screen_height // 3
-        self.generation = 1
+        self.x_screen_bias = screen_width // 7
+        self.y_screen_bias = screen_height // 7
+        self.generation = 0
         self.loop = 0
         
     def update_generation(self):
         # Подсчет соседей для каждой клетки кроме граничных
         m, n = self.cell_field.shape
-        N = (self.cell_field[0:-2,0:-2] + self.cell_field[0:-2,1:-1] + self.cell_field[0:-2,2:] + self.cell_field[1:-1,0:-2] 
-             + self.cell_field[1:-1,2:] + self.cell_field[2: ,0:-2] + self.cell_field[2: ,1:-1] + self.cell_field[2: ,2:])
+        N = (self.cell_field[0:-2,0:-2] + self.cell_field[0:-2,1:-1] + self.cell_field[0:-2,2:] + self.cell_field[1:-1,0:-2] + 
+            self.cell_field[1:-1,2:] + self.cell_field[2: ,0:-2] + self.cell_field[2: ,1:-1] + self.cell_field[2: ,2:])
         # Применение правил
-        birth = (N == 3) & (self.cell_field[1:-1,1:-1] == 0)
-        survive = ((N == 2) | (N == 3)) & (self.cell_field[1:-1,1:-1] == 1)
+        birth = np.logical_and(N == 3, np.logical_not(self.cell_field[1:-1,1:-1]))
+        survive = np.logical_and(np.logical_or(N == 2, N == 3), self.cell_field[1:-1,1:-1])
         self.new_cell_field = np.zeros((m, n))
         self.new_cell_field[1:-1,1:-1][birth | survive] = 1
         self.old_cell_field = self.cell_field
@@ -67,29 +68,21 @@ class Game_of_life():
         pass
     
     def setup(self, regime):
-        if regime == 1:
+        if regime == 1:                 # Случайная жизнь
             self.field_height = 100
             self.field_width = 200
             self.create_random_life()
-        elif regime == 3:
-            self.cell_field = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                        [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
-                                        [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])            
-            self.field_height, self.field_width = np.shape(self.cell_field)
-        elif regime == 2:
-            self.load_life()
+            
+        elif regime == 2:               # Загрузка расположения клеток из файла
+            self.load()
             m, n = self.cell_field.shape
             self.field_width, self.field_height = m + 40, n + 40
+            
+        elif regime == 3:                # Пустое поле
+            self.field_height = 100
+            self.field_width = 200
+            self.cell_field = np.zeros((self.field_height, self.field_width))
+        
         self.set_scale()
         pass
     
@@ -108,13 +101,18 @@ class Game_of_life():
         with open(Path, 'r') as f:
             for line in f:
                 data_list.append(line.split(','))
+                print(data_list[-1])
             self.cell_field = np.asarray(data_list, dtype='int')
         self.broaden_field(0)
+        
+    def load(self):
+        Path = 'Patterns/diagonal.rle'
+        self.cell_field = load_and_transform(Path)
     
     def set_scale(self):
         # FIXME
-        self.scale = int(min(self.screen_x / (self.field_width),
-                             self.screen_y / (self.field_height)))
+        self.scale = round(min(self.screen_x / self.field_width,
+                             self.screen_y / self.field_height))
     
     
     def coordinates_transform(self):
@@ -197,6 +195,14 @@ scroll_down = 0
 paint = 0
 x_paint = 0
 y_paint = 0
+play1, play2 = 1, 1
+
+
+regime = 3
+
+
+if regime == 3:
+    play1 = 0
 
 def count_period(fps):
     return round(fps / T)
@@ -205,7 +211,7 @@ def count_period(fps):
 
 if __name__ == '__main__':
     game = Game_of_life(X, Y)
-    game.setup(2)
+    game.setup(regime)
     
     pg.init()
     screen = pg.display.set_mode((X , Y))
@@ -216,7 +222,6 @@ if __name__ == '__main__':
     clock = pg.time.Clock()
     FPS = start_FPS
     finished = False
-    play1, play2 = 1, 1
     t = 0
     
     while not finished:
