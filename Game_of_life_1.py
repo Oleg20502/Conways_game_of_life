@@ -17,6 +17,7 @@ import numpy as np
 import pygame as pg
 #import time as t
 from pygame.draw import polygon
+from buttons import Buttons
 
 WHITE = (255, 255, 255)
 RED = (225, 0, 50)
@@ -175,6 +176,38 @@ class Game_of_life():
             self.loop = 1
 
 
+
+
+
+
+
+class Buttons:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def draw(self, x, y, text, i):
+        mouse = pg.mouse.get_pos()
+        click = pg.mouse.get_pressed()
+
+        if x < mouse[0] < x + self.width:
+            if y < mouse[1] < y + self.height:
+                pg.draw.rect(screen, (29, 154, 98), (x, y, self.width, self.height))
+
+                if click[0] == 1:
+                    i
+
+
+        print_text(text, x + 10, y + 10)
+
+
+
+
+
+
+
+
+
 ###################
 #     VUSUALISATION
 ###################
@@ -210,6 +243,9 @@ def count_period(fps):
 #period = round(FPS / T)
 
 
+
+
+
 if __name__ == '__main__':
     game = Game_of_life(X, Y)
     
@@ -232,28 +268,24 @@ if __name__ == '__main__':
     t = 0
     menu = 1
     fon = pg.image.load('fon.jpg')
-
+    button = Buttons(850, 50)
 
     while menu == 1:
         clock.tick(FPS)
         for event in pg.event.get():
-            if event.type != pg.KEYDOWN:
+            if event.type != pg.MOUSEBUTTONDOWN:
                 pg.display.update()
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_1:
-                    i = 1
-                if event.key == pg.K_2:
-                    i = 2
-                if event.key == pg.K_3:
-                    i = 3
+            if event.type == pg.MOUSEBUTTONDOWN:
                 menu = 0
 
 
             screen.blit(fon, (0, 0))
+            button.draw(X / 8, Y / 4, 'Запуск произвольного поля', 1)
+            button.draw(X / 8, (Y / 4 + 50), 'Запуск произвольного загруженного из файла поля', 2)
+            button.draw(X / 8, (Y / 4 + 110), 'Рисование рислвания своего поля', 3)
             print_text('Game of live', X / 4, Y / 10)
-            print_text('Нажмите 1 для запука произвольно поля', X / 4, Y / 4)
-            print_text('Нажмите 2 для загруженного из файла поля', X / 4, (Y / 4 + 50))
-            print_text('Нажмите 3 для рислвания своего поля', X / 4, (Y / 4 + 110))
+
+
 
     game.setup(i)
 
