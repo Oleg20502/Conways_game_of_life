@@ -211,6 +211,11 @@ if __name__ == '__main__':
     screen.fill(WHITE)
     pg.display.set_caption('Conways_game_of_life')
 
+
+    #устанавливает инконку приложения (иконку надо закинуть в одну папку с содержимым игры, название иконки iconofgame.png )
+    #icon = pg.image.load('iconofgame.png')
+    #pg.display.set_icon(icon)
+
     pg.display.update()
     clock = pg.time.Clock()
     FPS = start_FPS
