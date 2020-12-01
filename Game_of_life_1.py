@@ -197,7 +197,7 @@ class Buttons:
                 return i
 
 
-        print_text(text, x + 10, y + 10)
+        print_text(text, x + 8, y + 8)
 
 
 
