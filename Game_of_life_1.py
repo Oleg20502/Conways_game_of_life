@@ -186,7 +186,7 @@ class Buttons:
         self.width = width
         self.height = height
 
-    def draw(self, x, y, text, i):
+    def draw_and_action(self, x, y, text, i):
         mouse = pg.mouse.get_pos()
         click = pg.mouse.get_pressed()
 
@@ -195,10 +195,11 @@ class Buttons:
                 pg.draw.rect(screen, (29, 154, 98), (x, y, self.width, self.height))
 
                 if click[0] == 1:
-                    i
+                    return i
 
 
         print_text(text, x + 10, y + 10)
+
 
 
 
@@ -280,9 +281,9 @@ if __name__ == '__main__':
 
 
             screen.blit(fon, (0, 0))
-            button.draw(X / 8, Y / 4, 'Запуск произвольного поля', 1)
-            button.draw(X / 8, (Y / 4 + 50), 'Запуск произвольного загруженного из файла поля', 2)
-            button.draw(X / 8, (Y / 4 + 110), 'Рисование рислвания своего поля', 3)
+            button.draw_and_action(X / 8, Y / 4, 'Запуск произвольного поля', 1)
+            button.draw_and_action(X / 8, (Y / 4 + 50), 'Запуск произвольного загруженного из файла поля', 2)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Рисование рислвания своего поля', 3)
             print_text('Game of live', X / 4, Y / 10)
 
 
