@@ -5,10 +5,8 @@
 
 Правая кнопка мыши - добавить клетку;
 Левая кнопка мыши - перемещение изображения;
-Стрелка вверх - увеличить масштаб;
-Стрелка вниз - уменьшить масштаб;
+Колесико мыши - изменить масштаб;
 Пробел - пауза.
-
 
 '''
 
@@ -41,6 +39,8 @@ class Game_of_life():
         self.screen_x = screen_width
         self.screen_y = screen_height
         self.scale = 0
+        self.celll_field = None
+        self.field = None
         self.x_index_bias = 0
         self.y_index_bias = 0
         self.x_screen_bias = screen_width // 3
@@ -192,6 +192,8 @@ x_cur, y_cur = 0, 0
 track_mouse = 0
 arrow_up_pressed = 0
 arrow_down_pressed = 0
+scroll_up = 0
+scroll_down = 0
 paint = 0
 x_paint = 0
 y_paint = 0
@@ -234,7 +236,7 @@ if __name__ == '__main__':
                     FPS = max_FPS
                     paint = 1
                 if event.button == 5:
-                    print(event)
+                    game.scale *= 0.8
                     
             elif event.type == pg.MOUSEBUTTONUP:
                 if event.button == 3:
@@ -244,31 +246,17 @@ if __name__ == '__main__':
                     FPS = start_FPS
                     paint = 0
                 if event.button == 4:
-                    print(event)
+                    game.scale *= 1.2
                     
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_UP:
-                    arrow_up_pressed = 1
-                elif event.key == pg.K_DOWN:
-                    arrow_down_pressed = 1
                 if event.key == pg.K_SPACE:
                     play1 = not play1
-                    
-            elif event.type == pg.KEYUP:
-                if event.key == pg.K_UP:
-                    arrow_up_pressed = 0
-                elif event.key == pg.K_DOWN:
-                    arrow_down_pressed = 0
 
         if track_mouse == 1:
             x_cur, y_cur = pg.mouse.get_pos()
             game.x_screen_bias += x_cur - x_start
             game.y_screen_bias += y_cur - y_start
             x_start, y_start = x_cur, y_cur
-        if arrow_up_pressed:
-            game.scale *= 1.1
-        if arrow_down_pressed:
-            game.scale *= 0.9 
         if paint and (not play1 or not play2):
             x_paint , y_paint = pg.mouse.get_pos()
             game.add_cell(x_paint, y_paint)
