@@ -223,6 +223,33 @@ def print_text(txt, x, y, font_colour = (0, 0, 0), font_type = 'text.ttf', font_
         screen.blit(text, (x, y))
 
 
+def main_menu (menu):
+    while menu == 1:
+        clock.tick(FPS)
+        for event in pg.event.get():
+            if event.type != pg.MOUSEBUTTONDOWN:
+                pg.display.update()
+            if button.regim != None:
+                menu = 0
+
+
+            screen.blit(fon, (0, 0))
+            button.draw_and_action(X / 8, Y / 4, 'Запуск произвольного поля', 1)
+            button.draw_and_action(X / 8, (Y / 4 + 50), 'Запуск произвольного загруженного из файла поля', 2)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Рисование рислвания своего поля', 3)
+            button.draw_and_action(X / 8, (Y / 4 + 160), 'Настройки', 4)
+            button.draw_and_action(X / 8, (Y / 4 + 210), 'Выход', 5)
+            print_text('Game of live', X / 4, Y / 10)
+    return menu
+
+
+
+
+
+
+
+
+
 X, Y = 1000, 550
 start_FPS = 60
 max_FPS = 250
@@ -268,22 +295,27 @@ if __name__ == '__main__':
     fon = pg.image.load('fon.jpg')
     button = Buttons(850, 50)
 
-    while menu == 1:
-        clock.tick(FPS)
-        for event in pg.event.get():
-            if event.type != pg.MOUSEBUTTONDOWN:
-                pg.display.update()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                menu = 0
 
 
-            screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Запуск произвольного поля', 1)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Запуск произвольного загруженного из файла поля', 2)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Рисование рислвания своего поля', 3)
-            print_text('Game of live', X / 4, Y / 10)
+    menu = main_menu(1)
+
+    if button.regim == 4:
+        update_screen = 0
+        while update_screen == 0:
+            clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type != pg.MOUSEBUTTONDOWN:
+                    pg.display.update()
+                if event.type == pg.MOUSEBUTTONDOWN:
+                    update_screen = 1
 
 
+                screen.blit(fon, (0, 0))
+                button.draw_and_action(X / 8, Y / 4, 'Назад', 6)
+                button.draw_and_action(X / 8, (Y / 4 + 50), 'Сменить язык', 7)
+
+    if button.regim == 5:
+        exit()
 
     game.setup(button.regim)
 
