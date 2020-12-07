@@ -280,12 +280,13 @@ def Zvuk():
                 update_screen = 1
 
             screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Звук',13)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Назад', 14)
+            button.draw_and_action(X / 8, Y / 4, 'Включить звук',13)
+            button.draw_and_action(X / 8, (Y / 4 + 50), 'Выключить звук', 14)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 15)
             print_text('Game of live', X / 4, Y / 10)
     if button.regim == 12:
         ()
-    if button.regim == 14:
+    if button.regim == 15:
         Settings()
 
 
@@ -302,9 +303,9 @@ def Zastavka():
             screen.blit(fon, (0, 0))
             button.draw_and_action(X / 8, Y / 4, 'Заставка', 10)
             button.draw_and_action(X / 8, (Y / 4 + 50), 'Памагите!!!', 11)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 17)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 18)
             print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 17:
+    if button.regim == 18:
         Settings()
 
 
