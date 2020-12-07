@@ -292,9 +292,11 @@ def Volume():
             button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 16)
             print_text('Game of live', X / 4, Y / 10)
     if button.regim == 14:
-        ()#Volume_on()
+        pg.mixer.music.play(-1)
+        Volume()
     if button.regim == 15:
-        ()#Volume_off()
+        pg.mixer.music.play(0)
+        Volume()
     if button.regim == 16:
         Settings()
 
@@ -414,7 +416,9 @@ if __name__ == '__main__':
     clock = pg.time.Clock()
     screen.fill(WHITE)
     pg.display.set_caption('Conways_game_of_life')
-
+    pg.mixer.music.load('sound in menu.mp3')
+    pg.mixer.music.set_volume(0.35)
+    pg.mixer.music.play(-1)
     # устанавливает инконку приложения (иконку надо закинуть в одну папку с содержимым игры, название иконки iconofgame.png )
     # icon = pg.image.load('iconofgame.png')
     # pg.display.set_icon(icon)
