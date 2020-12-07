@@ -241,15 +241,18 @@ def Settings():
             button.draw_and_action(X / 8, (Y / 4 + 50), 'Сменить язык', 7)
             button.draw_and_action(X / 8, (Y / 4 + 110), 'Звук', 8)
             button.draw_and_action(X / 8, (Y / 4 + 160), 'Заставка', 9)
+            button.draw_and_action(X / 8, (Y / 4 + 210), 'ВЫбор цвета пикселей', 10)
             print_text('Game of live', X / 4, Y / 10)
     if button.regim == 6:
         main_menu()
     if button.regim == 7:
         Language()
     if button.regim == 8:
-        Zvuk()
+        Volume()
     if button.regim == 9:
-        Zastavka()
+        Fon()
+    if button.regim == 10:
+        Colour_of_pixels()
 
 def Language():
     update_screen = 0
@@ -262,14 +265,14 @@ def Language():
                 update_screen = 1
 
             screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Русский', 10)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 11)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 12)
+            button.draw_and_action(X / 8, Y / 4, 'Русский', 11)
+            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 12)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 13)
             print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 12:
+    if button.regim == 13:
         Settings()
 
-def Zvuk():
+def Volume():
     update_screen = 0
     while update_screen == 0:
         clock.tick(FPS)
@@ -280,17 +283,19 @@ def Zvuk():
                 update_screen = 1
 
             screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Включить звук',13)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Выключить звук', 14)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 15)
+            button.draw_and_action(X / 8, Y / 4, 'Включить звук',14)
+            button.draw_and_action(X / 8, (Y / 4 + 50), 'Выключить звук', 15)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 16)
             print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 12:
-        ()
+    if button.regim == 14:
+        ()#Volume_on()
     if button.regim == 15:
+        ()#Volume_off()
+    if button.regim == 16:
         Settings()
 
 
-def Zastavka():
+def Fon():
     update_screen = 0
     while update_screen == 0:
         clock.tick(FPS)
@@ -301,13 +306,31 @@ def Zastavka():
                 update_screen = 1
 
             screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Заставка', 10)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Памагите!!!', 11)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 18)
+            button.draw_and_action(X / 8, Y / 4, 'Заставка', 17)
+            button.draw_and_action(X / 8, (Y / 4 + 50), 'Памагите!!!', 18)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 19)
             print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 18:
+    if button.regim == 19:
         Settings()
 
+
+def Colour_of_pixels():
+    update_screen = 0
+    while update_screen == 0:
+        clock.tick(FPS)
+        for event in pg.event.get():
+            if event.type != pg.MOUSEBUTTONDOWN:
+                pg.display.update()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                update_screen = 1
+
+            screen.blit(fon, (0, 0))
+            button.draw_and_action(X / 8, Y / 4, 'Красный', 20)
+            button.draw_and_action(X / 8, (Y / 4 + 50), 'Памагите!!!', 21)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 22)
+            print_text('Game of live', X / 4, Y / 10)
+    if button.regim == 22:
+        Settings()
 
 def Language():
     update_screen = 0
@@ -320,11 +343,11 @@ def Language():
                 update_screen = 1
 
             screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Русский', 10)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 11)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 12)
+            button.draw_and_action(X / 8, Y / 4, 'Русский', 23)
+            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 24)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 25)
             print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 12:
+    if button.regim == 25:
         Settings()
 
 def Language():
@@ -338,11 +361,11 @@ def Language():
                 update_screen = 1
 
             screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Русский', 10)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 11)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 12)
+            button.draw_and_action(X / 8, Y / 4, 'Русский', 26)
+            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 27)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 28)
             print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 12:
+    if button.regim == 28:
         Settings()
 
 
