@@ -62,6 +62,25 @@ class Game_of_life():
         survive = np.logical_and(np.logical_or(N == 2, N == 3), self.cell_field[1:-1,1:-1])
         self.cell_field[1:-1,1:-1] = birth | survive
         
+    def broaden_field(self, border = 1):
+        # Расширяеет поле, т.е. массив клеток, если они подобрались близко к границам
+        a, b = np.sum(self.cell_field[border, :]), np.sum(self.cell_field[-1-border, :])
+        c, d = np.sum(self.cell_field[:, border]), np.sum(self.cell_field[:, -1-border])
+        if a > 0:
+            self.cell_field = np.vstack([np.zeros((1, self.field_width)), self.cell_field])
+            self.y_index_bias -= 1
+            self.field_height += 1
+        if b > 0:
+            self.cell_field = np.vstack([self.cell_field, np.zeros((1, self.field_width))])
+            self.field_height += 1
+        if c > 0:
+            self.x_index_bias -= 1
+            self.cell_field = np.hstack([np.zeros((self.field_height, 1)), self.cell_field])
+            self.field_width += 1
+        if d > 0:
+            self.cell_field = np.hstack([self.cell_field, np.zeros((self.field_height, 1))])
+            self.field_width += 1
+        
     def create_random_life(self):
         self.cell_field = np.zeros((self.field_height, self.field_width))
         self.cell_field[1:-1,1:-1] = np.random.randint(0, 2, (self.field_height-2, self.field_width-2))
@@ -110,7 +129,6 @@ class Game_of_life():
         
     def load(self):
         Path = 'Patterns/2c5-spaceship-gun-p416.rle'
-        self.cell_field = load_and_transform(Path)
         self.cells = load_and_transform(Path)
     
     def set_scale(self):
@@ -145,25 +163,6 @@ class Game_of_life():
         self.screen_rect[:, ::2] = self.scale * (index_rect[:, ::2]-self.x_index_coord) + self.x_screen_bias
         self.screen_rect[:, 1::2] = self.scale * (index_rect[:, 1::2]-self.y_index_coord) + self.y_screen_bias
         return self.screen_rect
-
-    def broaden_field(self, border = 1):
-        # Расширяеет поле, т.е. массив клеток, если они подобрались близко к границам
-        a, b = np.sum(self.cell_field[border, :]), np.sum(self.cell_field[-1-border, :])
-        c, d = np.sum(self.cell_field[:, border]), np.sum(self.cell_field[:, -1-border])
-        if a > 0:
-            self.cell_field = np.vstack([np.zeros((1, self.field_width)), self.cell_field])
-            self.y_index_bias -= 1
-            self.field_height += 1
-        if b > 0:
-            self.cell_field = np.vstack([self.cell_field, np.zeros((1, self.field_width))])
-            self.field_height += 1
-        if c > 0:
-            self.x_index_bias -= 1
-            self.cell_field = np.hstack([np.zeros((self.field_height, 1)), self.cell_field])
-            self.field_width += 1
-        if d > 0:
-            self.cell_field = np.hstack([self.cell_field, np.zeros((self.field_height, 1))])
-            self.field_width += 1
     
     def get_field_shape(self):
         self.m, self.n = np.shape(self.cell_field)
@@ -179,7 +178,8 @@ class Game_of_life():
         self.get_mouse_index_coord(x, y)
         if self.field_height > self.y_index_coord >= 0 and self.field_width > self.x_index_coord >= 0:
             #self.cell_field[y_index_coord, x_index_coord] = not self.cell_field[y_index_coord, x_index_coord]
-            self.cell_field[y_index_coord, x_index_coord] = 1
+            self.cell_field[self.y_index_coord, self.x_index_coord] = 1
+
         
 ###################
 #     VUSUALISATION
@@ -208,15 +208,11 @@ y_paint = 0
 play1, play2 = 0, 1
 
 
-regime = 2        ############
+regime = 1        ############
 
-
-if regime == 3:
-    play1 = 0
 
 def count_period(t, fps):
     return round(fps / t)
-#period = round(FPS / T)
 
 
 if __name__ == '__main__':
