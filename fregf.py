@@ -1,13 +1,9 @@
 import numpy as np
 import pygame as pg
+#import time as t
 from pygame.draw import polygon
+#from buttons import *
 
-
-def print_text(txt, x, y, font_colour=(0, 0, 0), font_type='text.ttf', font_size=35):
-    # Рисуем текст чёрного цвета, размера 35, с координатами x, y
-    font_type = pg.font.Font(font_type, font_size)
-    text = font_type.render(txt, True, font_colour)
-    screen.blit(text, (x, y))
 
 class Buttons:
 
@@ -26,9 +22,6 @@ class Buttons:
         print_text(text, x + 8, y + 8)
 
 
-class Menu
-
-    def __init__(self):__
 
 
 def main_menu (menu):
@@ -48,6 +41,8 @@ def main_menu (menu):
             button.draw_and_action(X / 8, (Y / 4 + 160), 'Настройки', 4)
             button.draw_and_action(X / 8, (Y / 4 + 210), 'Выход', 5)
             print_text('Game of live', X / 4, Y / 10)
+    if button.regim == 4:
+        settings()
     return menu
 
 def settings():
@@ -66,4 +61,46 @@ def settings():
             button.draw_and_action(X / 8, (Y / 4 + 110), 'Звук', 8)
             button.draw_and_action(X / 8, (Y / 4 + 160), 'Заставка', 9)
             print_text('Game of live', X / 4, Y / 10)
+    if button.regim == 6:
+        main_menu(1)
 
+    X, Y = 1000, 550
+    start_FPS = 60
+    max_FPS = 250
+    T = 15
+    x_start, y_start = 0, 0
+    x_cur, y_cur = 0, 0
+    track_mouse = 0
+    arrow_up_pressed = 0
+    arrow_down_pressed = 0
+    paint = 0
+    x_paint = 0
+    y_paint = 0
+
+    def count_period(fps):
+        return round(fps / T)
+
+    # period = round(FPS / T)
+
+    if __name__ == '__main__':
+
+
+        pg.init()
+        screen = pg.display.set_mode((X, Y))
+        clock = pg.time.Clock()
+        screen.fill(WHITE)
+        pg.display.set_caption('Conways_game_of_life')
+
+        # устанавливает инконку приложения (иконку надо закинуть в одну папку с содержимым игры, название иконки iconofgame.png )
+        # icon = pg.image.load('iconofgame.png')
+        # pg.display.set_icon(icon)
+
+        pg.display.update()
+        clock = pg.time.Clock()
+        FPS = start_FPS
+        finished = False
+        play1, play2 = 1, 1
+        t = 0
+        menu = 1
+        fon = pg.image.load('fon.jpg')
+        button = Buttons(850, 50)

@@ -1,10 +1,14 @@
 '''
+
 Игра Жизнь
+
 Правая кнопка мыши - добавить клетку;
 Левая кнопка мыши - перемещение изображения;
 Стрелка вверх - увеличить масштаб;
 Стрелка вниз - уменьшить масштаб;
 Пробел - пауза.
+
+
 '''
 
 import numpy as np
@@ -12,6 +16,7 @@ import pygame as pg
 # import time as t
 from pygame.draw import polygon
 
+# from buttons import *
 
 WHITE = (255, 255, 255)
 RED = (225, 0, 50)
@@ -205,14 +210,14 @@ def print_text(txt, x, y, font_colour=(0, 0, 0), font_type='text.ttf', font_size
     screen.blit(text, (x, y))
 
 
-def main_menu():
+def Main_menu():
     menu = 1
     while menu == 1:
         clock.tick(FPS)
         for event in pg.event.get():
             if event.type != pg.MOUSEBUTTONDOWN:
                 pg.display.update()
-            if event.type == pg.MOUSEBUTTONDOWN:
+            if button.regim != None:
                 menu = 0
 
             screen.blit(fon, (0, 0))
@@ -224,6 +229,7 @@ def main_menu():
             print_text('Game of live', X / 4, Y / 10)
     if button.regim == 4:
         Settings()
+    return menu
 
 
 def Settings():
@@ -243,106 +249,8 @@ def Settings():
             button.draw_and_action(X / 8, (Y / 4 + 160), 'Заставка', 9)
             print_text('Game of live', X / 4, Y / 10)
     if button.regim == 6:
-        main_menu()
-    if button.regim == 7:
-        Language()
-    if button.regim == 8:
-        Zvuk()
-    if button.regim == 9:
-        Zastavka()
-
-def Language():
-    update_screen = 0
-    while update_screen == 0:
-        clock.tick(FPS)
-        for event in pg.event.get():
-            if event.type != pg.MOUSEBUTTONDOWN:
-                pg.display.update()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                update_screen = 1
-
-            screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Русский', 10)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 11)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 12)
-            print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 12:
-        Settings()
-
-def Zvuk():
-    update_screen = 0
-    while update_screen == 0:
-        clock.tick(FPS)
-        for event in pg.event.get():
-            if event.type != pg.MOUSEBUTTONDOWN:
-                pg.display.update()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                update_screen = 1
-
-            screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Звук',13)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Назад', 14)
-            print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 12:
-        ()
-    if button.regim == 14:
-        Settings()
-
-
-def Zastavka():
-    update_screen = 0
-    while update_screen == 0:
-        clock.tick(FPS)
-        for event in pg.event.get():
-            if event.type != pg.MOUSEBUTTONDOWN:
-                pg.display.update()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                update_screen = 1
-
-            screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Заставка', 10)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Памагите!!!', 11)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 17)
-            print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 17:
-        Settings()
-
-
-def Language():
-    update_screen = 0
-    while update_screen == 0:
-        clock.tick(FPS)
-        for event in pg.event.get():
-            if event.type != pg.MOUSEBUTTONDOWN:
-                pg.display.update()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                update_screen = 1
-
-            screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Русский', 10)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 11)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 12)
-            print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 12:
-        Settings()
-
-def Language():
-    update_screen = 0
-    while update_screen == 0:
-        clock.tick(FPS)
-        for event in pg.event.get():
-            if event.type != pg.MOUSEBUTTONDOWN:
-                pg.display.update()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                update_screen = 1
-
-            screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Русский', 10)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 11)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 12)
-            print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 12:
-        Settings()
+        print(str(button.regim))
+        ain_menu()
 
 
 X, Y = 1000, 550
@@ -389,88 +297,4 @@ if __name__ == '__main__':
     fon = pg.image.load('fon.jpg')
     button = Buttons(850, 50)
 
-    main_menu()
-
-
-    if button.regim == 5:
-        exit()
-
-    game.setup(button.regim)
-
-    if menu == 0:
-        while not finished:
-            t += 1
-            period = count_period(FPS)
-            clock.tick(FPS)
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    finished = True
-
-                elif event.type == pg.MOUSEBUTTONDOWN:
-                    if event.button == 3:
-                        track_mouse = 1
-                        x_start, y_start = pg.mouse.get_pos()
-                    if event.button == 1:
-                        play2 = 0
-                        FPS = max_FPS
-                        paint = 1
-                    if event.button == 5:
-                        print(event)
-
-                elif event.type == pg.MOUSEBUTTONUP:
-                    if event.button == 3:
-                        track_mouse = 0
-                    if event.button == 1:
-                        play2 = 1
-                        FPS = start_FPS
-                        paint = 0
-                    if event.button == 4:
-                        print(event)
-
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_UP:
-                        arrow_up_pressed = 1
-                    elif event.key == pg.K_DOWN:
-                        arrow_down_pressed = 1
-                    if event.key == pg.K_SPACE:
-                        play1 = not play1
-
-                elif event.type == pg.KEYUP:
-                    if event.key == pg.K_UP:
-                        arrow_up_pressed = 0
-                    elif event.key == pg.K_DOWN:
-                        arrow_down_pressed = 0
-
-            if track_mouse == 1:
-                x_cur, y_cur = pg.mouse.get_pos()
-                game.x_screen_bias += x_cur - x_start
-                game.y_screen_bias += y_cur - y_start
-                x_start, y_start = x_cur, y_cur
-            if arrow_up_pressed:
-                game.scale *= 1.1
-            if arrow_down_pressed:
-                game.scale *= 0.9
-            if paint and (not play1 or not play2):
-                x_paint, y_paint = pg.mouse.get_pos()
-                game.add_cell(x_paint, y_paint)
-
-            if t % period == 0:
-                game.run(play1 and play2)
-                # print('Поколение:', game.generation)
-                draw(game.rect_coordinetes(), (225, 0, 50), screen)
-
-                pg.display.update()
-                screen.fill(WHITE)
-
-    pg.quit()
-
-
-
-
-
-
-
-
-
-            
-
+    menu = main_menu()
