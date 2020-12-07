@@ -11,6 +11,7 @@ import numpy as np
 import pygame as pg
 # import time as t
 from pygame.draw import polygon
+from ji import *
 
 
 WHITE = (255, 255, 255)
@@ -29,6 +30,18 @@ darkorange3 = (205, 102, 0, 255)
 rosybrown5 = (159, 125, 125, 255)
 sandybrown = (244, 164, 96, 255)
 CLEAR = (0, 0, 0, 0)
+zapp = 'Запуск произвольного поля'
+zapz = 'Запуск произвольного загруженного из файла поля'
+zapn = 'Рисование рислвания своего поля'
+nas = 'Настройки'
+v = 'Выход'
+naz = 'Назад'
+yz = 'Язык'
+s = 'Звук'
+zast = 'Заставка'
+vcp = 'Выбор цвета пикселей'
+rus = 'Русский'
+eng = 'Английский'
 
 
 class Game_of_life():
@@ -216,11 +229,11 @@ def main_menu():
                 menu = 0
 
             screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Запуск произвольного поля', 1)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Запуск произвольного загруженного из файла поля', 2)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Рисование рислвания своего поля', 3)
-            button.draw_and_action(X / 8, (Y / 4 + 160), 'Настройки', 4)
-            button.draw_and_action(X / 8, (Y / 4 + 210), 'Выход', 5)
+            button.draw_and_action(X / 8, Y / 4, zapp, 1)
+            button.draw_and_action(X / 8, (Y / 4 + 50), zapz, 2)
+            button.draw_and_action(X / 8, (Y / 4 + 110), zapn, 3)
+            button.draw_and_action(X / 8, (Y / 4 + 160), nas, 4)
+            button.draw_and_action(X / 8, (Y / 4 + 210), v, 5)
             print_text('Game of live', X / 4, Y / 10)
     if button.regim == 1 or button.regim == 2 or button.regim == 3:
         return 0
@@ -241,11 +254,11 @@ def Settings():
                 update_screen = 1
 
             screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Назад', 6)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Сменить язык', 7)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Звук', 8)
-            button.draw_and_action(X / 8, (Y / 4 + 160), 'Заставка', 9)
-            button.draw_and_action(X / 8, (Y / 4 + 210), 'ВЫбор цвета пикселей', 10)
+            button.draw_and_action(X / 8, Y / 4, naz, 6)
+            button.draw_and_action(X / 8, (Y / 4 + 50), yz, 7)
+            button.draw_and_action(X / 8, (Y / 4 + 110), s, 8)
+            button.draw_and_action(X / 8, (Y / 4 + 160), zast, 9)
+            button.draw_and_action(X / 8, (Y / 4 + 210), vcp, 10)
             print_text('Game of live', X / 4, Y / 10)
     if button.regim == 6:
         main_menu()
@@ -269,12 +282,49 @@ def Language():
                 update_screen = 1
 
             screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Русский', 11)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 12)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 13)
+            button.draw_and_action(X / 8, Y / 4, rus, 11)
+            button.draw_and_action(X / 8, (Y / 4 + 50), eng, 12)
+            button.draw_and_action(X / 8, (Y / 4 + 110), naz, 13)
             print_text('Game of live', X / 4, Y / 10)
+    if button.regim == 11:
+        Russian()
+        Language()
+    if button.regim == 12:
+        English()
+        Language()
     if button.regim == 13:
         Settings()
+
+def Russian():
+    global zapp, zapz, zapn, nas, v, naz, yz, s, zast, vcp, rus, eng
+    zapp = 'Запуск произвольного поля'
+    zapz = 'Запуск произвольного загруженного из файла поля'
+    zapn = 'Рисование рислвания своего поля'
+    nas = 'Настройки'
+    v = 'Выход'
+    naz = 'Назад'
+    yz = 'Язык'
+    s = 'Звук'
+    zast = 'Заставка'
+    vcp = 'Выбор цвета пикселей'
+    rus = 'Русский'
+    eng = 'Английский'
+
+def English():
+    global zapp, zapz, zapn, nas, v, naz, yz, s, zast, vcp, rus, eng
+    zapp = 'Launch custom field'
+    zapz = 'Launch an arbitrary field loaded from a file'
+    zapn = 'Draw a custom field'
+    nas = 'Settings'
+    v = 'Exit'
+    naz = 'Back'
+    yz = 'Language'
+    s = 'Sound'
+    zast = 'Screensaver'
+    vcp = 'Select pixel color'
+    rus = 'Russian'
+    eng = 'English'
+
 
 def Volume():
     update_screen = 0
@@ -295,7 +345,7 @@ def Volume():
         pg.mixer.music.play(-1)
         Volume()
     if button.regim == 15:
-        pg.mixer.music.play(0)
+        pg.mixer.music.pause()
         Volume()
     if button.regim == 16:
         Settings()
@@ -346,45 +396,7 @@ def Colour_of_pixels():
     if button.regim == 22:
         Settings()
 
-def Language():
-    update_screen = 0
-    while update_screen == 0:
-        clock.tick(FPS)
-        for event in pg.event.get():
-            if event.type != pg.MOUSEBUTTONDOWN:
-                pg.display.update()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                update_screen = 1
 
-            screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Русский', 23)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 24)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 25)
-            print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 23:
-        ()
-    if button.regim == 24:
-        ()
-    if button.regim == 25:
-        Settings()
-
-def Language():
-    update_screen = 0
-    while update_screen == 0:
-        clock.tick(FPS)
-        for event in pg.event.get():
-            if event.type != pg.MOUSEBUTTONDOWN:
-                pg.display.update()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                update_screen = 1
-
-            screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Русский', 26)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 27)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 28)
-            print_text('Game of live', X / 4, Y / 10)
-    if button.regim == 28:
-        Settings()
 
 
 X, Y = 1000, 550
