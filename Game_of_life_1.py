@@ -43,7 +43,6 @@ vcp = 'Выбор цвета пикселей'
 rus = 'Русский'
 eng = 'Английский'
 
-
 class Game_of_life():
     def __init__(self, screen_width, screen_height):
         self.screen_x = screen_width
@@ -219,14 +218,14 @@ def print_text(txt, x, y, font_colour=(0, 0, 0), font_type='text.ttf', font_size
 
 
 def main_menu():
-    menu = 1
-    while menu == 1:
+    update_screen = 0
+    while update_screen == 0:
         clock.tick(FPS)
         for event in pg.event.get():
             if event.type != pg.MOUSEBUTTONDOWN:
                 pg.display.update()
             if event.type == pg.MOUSEBUTTONDOWN:
-                menu = 0
+                update_screen = 1
 
             screen.blit(fon, (0, 0))
             button.draw_and_action(X / 8, Y / 4, zapp, 1)
@@ -236,7 +235,8 @@ def main_menu():
             button.draw_and_action(X / 8, (Y / 4 + 210), v, 5)
             print_text('Game of live', X / 4, Y / 10)
     if button.regim == 1 or button.regim == 2 or button.regim == 3:
-        return 0
+        global menu
+        menu = 0
     if button.regim == 4:
         Settings()
     if button.regim == 5:
@@ -445,14 +445,13 @@ if __name__ == '__main__':
     fon = pg.image.load('fon.jpg')
     button = Buttons(850, 50)
 
-    menu = main_menu()
+    main_menu()
 
 
-    if button.regim == 5:
-        exit()
+
 
     game.setup(button.regim)
-
+    print(menu)
     if menu == 0:
         while not finished:
             t += 1
