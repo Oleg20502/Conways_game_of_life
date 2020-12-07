@@ -13,7 +13,7 @@
 
 import numpy as np
 import pygame as pg
-#import time as t
+import time as t
 from Format_transform import load_and_transform
 from pygame.draw import polygon
 
@@ -47,7 +47,6 @@ class Game_of_life():
         self.x_screen_bias = screen_width // 7
         self.y_screen_bias = screen_height // 7
         self.generation = 0
-        self.loop = 0
         
     def update_generation(self):
         # Подсчет соседей для каждой клетки кроме граничных
@@ -57,10 +56,7 @@ class Game_of_life():
         # Применение правил
         birth = np.logical_and(N == 3, np.logical_not(self.cell_field[1:-1,1:-1]))
         survive = np.logical_and(np.logical_or(N == 2, N == 3), self.cell_field[1:-1,1:-1])
-        self.new_cell_field = np.zeros((m, n))
-        self.new_cell_field[1:-1,1:-1][birth | survive] = 1
-        self.old_cell_field = self.cell_field
-        self.cell_field = self.new_cell_field
+        self.cell_field[1:-1,1:-1] = birth | survive
         
     def create_random_life(self):
         self.cell_field = np.zeros((self.field_height, self.field_width))
@@ -88,11 +84,9 @@ class Game_of_life():
     
     def run(self, run):
         if run:
-            if self.loop == 0:
-                self.generation += 1
-                self.broaden_field()
-                self.update_generation()
-                self.is_generation_change()
+            self.generation += 1
+            self.broaden_field()
+            self.update_generation()
         pass
     
     def load_life(self):
@@ -106,7 +100,7 @@ class Game_of_life():
         self.broaden_field(0)
         
     def load(self):
-        Path = 'Patterns/diagonal.rle'
+        Path = 'Patterns/2c5-spaceship-gun-p416.rle'
         self.cell_field = load_and_transform(Path)
     
     def set_scale(self):
@@ -167,10 +161,6 @@ class Game_of_life():
         if m > y_index_coord >= 0 and n > x_index_coord >= 0:
             #self.cell_field[y_index_coord, x_index_coord] = not self.cell_field[y_index_coord, x_index_coord]
             self.cell_field[y_index_coord, x_index_coord] = 1
-
-    def is_generation_change(self):
-        if np.allclose(self.cell_field, self.old_cell_field):
-            self.loop = 1
         
 ###################
 #     VUSUALISATION
@@ -182,9 +172,10 @@ def draw(Rect, color, space):
         polygon(space, color, [r[0:2], r[2:4], r[4:6], r[6:8]])
         
 X, Y = 1000, 550
-start_FPS = 60
+start_FPS = 120
 max_FPS = 250
-T = 15
+Trun = 120
+Tshow = 60
 x_start, y_start = 0, 0
 x_cur, y_cur = 0, 0
 track_mouse = 0
@@ -198,14 +189,14 @@ y_paint = 0
 play1, play2 = 1, 1
 
 
-regime = 3
+regime = 2        ############
 
 
 if regime == 3:
     play1 = 0
 
-def count_period(fps):
-    return round(fps / T)
+def count_period(t, fps):
+    return round(fps / t)
 #period = round(FPS / T)
 
 
@@ -222,11 +213,13 @@ if __name__ == '__main__':
     clock = pg.time.Clock()
     FPS = start_FPS
     finished = False
-    t = 0
-    
+    t1, t2, t3 = 0, 0, 0
+    measure1 = 0
+    measure2 = 0
     while not finished:
-        t += 1
-        period = count_period(FPS)
+        t1 += 1
+        period_run = count_period(Trun, FPS)
+        period_show = count_period(Tshow, FPS)
         clock.tick(FPS)
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -266,12 +259,22 @@ if __name__ == '__main__':
             x_paint , y_paint = pg.mouse.get_pos()
             game.add_cell(x_paint, y_paint)
             
-        if t % period == 0:            
+        if t1 % period_run == 0:  
+            time1 = t.time()
             game.run(play1 and play2)
+            time2 = t.time()
+            t2 += 1
+            measure1 += time2 - time1
             #print('Поколение:', game.generation)
+        if t1 % period_show == 0:
+            time3 = t.time()
             draw(game.rect_coordinetes(), (225, 0, 50), screen)
-                
             pg.display.update()
             screen.fill(WHITE)
-            
+            time4 = t.time()
+            t3 += 1
+            measure2 += time4 - time3
+    
     pg.quit()
+    print('Жизнь', round(measure1/t2, 4))
+    print('Pygame', round(measure2/t3, 4))
