@@ -222,8 +222,12 @@ def main_menu():
             button.draw_and_action(X / 8, (Y / 4 + 160), 'Настройки', 4)
             button.draw_and_action(X / 8, (Y / 4 + 210), 'Выход', 5)
             print_text('Game of live', X / 4, Y / 10)
+    if button.regim == 1 or button.regim == 2 or button.regim == 3:
+        return 0
     if button.regim == 4:
         Settings()
+    if button.regim == 5:
+        exit()
 
 
 def Settings():
@@ -310,6 +314,10 @@ def Fon():
             button.draw_and_action(X / 8, (Y / 4 + 50), 'Памагите!!!', 18)
             button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 19)
             print_text('Game of live', X / 4, Y / 10)
+    if button.regim == 17:
+        ()
+    if button.regim == 18:
+        ()
     if button.regim == 19:
         Settings()
 
@@ -329,6 +337,10 @@ def Colour_of_pixels():
             button.draw_and_action(X / 8, (Y / 4 + 50), 'Памагите!!!', 21)
             button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 22)
             print_text('Game of live', X / 4, Y / 10)
+    if button.regim == 20:
+        ()
+    if button.regim == 21:
+        ()
     if button.regim == 22:
         Settings()
 
@@ -347,6 +359,10 @@ def Language():
             button.draw_and_action(X / 8, (Y / 4 + 50), 'Английский', 24)
             button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 25)
             print_text('Game of live', X / 4, Y / 10)
+    if button.regim == 23:
+        ()
+    if button.regim == 24:
+        ()
     if button.regim == 25:
         Settings()
 
@@ -413,7 +429,7 @@ if __name__ == '__main__':
     fon = pg.image.load('fon.jpg')
     button = Buttons(850, 50)
 
-    main_menu()
+    menu = main_menu()
 
 
     if button.regim == 5:
