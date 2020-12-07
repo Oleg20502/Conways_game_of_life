@@ -39,18 +39,22 @@ class Game_of_life():
     def __init__(self, screen_width, screen_height):
         self.screen_x = screen_width
         self.screen_y = screen_height
+        
         self.scale = 0
         self.cell_field = None
-        self.field = None
+        self.cells = None
+        
         self.x_index_bias = 0
         self.y_index_bias = 0
-        self.x_screen_bias = screen_width // 7
-        self.y_screen_bias = screen_height // 7
+        self.x_screen_bias = 0
+        self.y_screen_bias = 0
+        self.x_index_coord = 0
+        self.y_index_coord = 0
+        
         self.generation = 0
         
     def update_generation(self):
         # Подсчет соседей для каждой клетки кроме граничных
-        m, n = self.cell_field.shape
         N = (self.cell_field[0:-2,0:-2] + self.cell_field[0:-2,1:-1] + self.cell_field[0:-2,2:] + self.cell_field[1:-1,0:-2] + 
             self.cell_field[1:-1,2:] + self.cell_field[2: ,0:-2] + self.cell_field[2: ,1:-1] + self.cell_field[2: ,2:])
         # Применение правил
@@ -71,8 +75,12 @@ class Game_of_life():
             
         elif regime == 2:               # Загрузка расположения клеток из файла
             self.load()
-            m, n = self.cell_field.shape
-            self.field_width, self.field_height = m + 40, n + 40
+            delta_x = 10
+            delta_y = 10
+            m, n = self.cells.shape
+            self.field_height, self.field_width = m + delta_y, n + delta_x
+            self.cell_field = np.zeros((self.field_height, self.field_width))
+            self.cell_field[delta_y//2:-delta_y//2, delta_x//2:-delta_x//2] = self.cells
             
         elif regime == 3:                # Пустое поле
             self.field_height = 100
@@ -80,6 +88,7 @@ class Game_of_life():
             self.cell_field = np.zeros((self.field_height, self.field_width))
         
         self.set_scale()
+        self.get_field_shape()
         pass
     
     def run(self, run):
@@ -102,6 +111,7 @@ class Game_of_life():
     def load(self):
         Path = 'Patterns/2c5-spaceship-gun-p416.rle'
         self.cell_field = load_and_transform(Path)
+        self.cells = load_and_transform(Path)
     
     def set_scale(self):
         # FIXME
@@ -132,33 +142,42 @@ class Game_of_life():
         index_rect[:, ::2] += self.x_index_bias
         index_rect[:, 1::2] += self.y_index_bias
         self.screen_rect = np.zeros(np.shape(index_rect))
-        self.screen_rect[:, ::2] = self.scale * index_rect[:, ::2] + self.x_screen_bias
-        self.screen_rect[:, 1::2] = self.scale * index_rect[:, 1::2] + self.y_screen_bias
+        self.screen_rect[:, ::2] = self.scale * (index_rect[:, ::2]-self.x_index_coord) + self.x_screen_bias
+        self.screen_rect[:, 1::2] = self.scale * (index_rect[:, 1::2]-self.y_index_coord) + self.y_screen_bias
         return self.screen_rect
 
     def broaden_field(self, border = 1):
         # Расширяеет поле, т.е. массив клеток, если они подобрались близко к границам
         a, b = np.sum(self.cell_field[border, :]), np.sum(self.cell_field[-1-border, :])
         c, d = np.sum(self.cell_field[:, border]), np.sum(self.cell_field[:, -1-border])
-        m, n = np.shape(self.cell_field)
         if a > 0:
-            self.cell_field = np.vstack([np.zeros((1, n)), self.cell_field])
+            self.cell_field = np.vstack([np.zeros((1, self.field_width)), self.cell_field])
             self.y_index_bias -= 1
-            m += 1
+            self.field_height += 1
         if b > 0:
-            self.cell_field = np.vstack([self.cell_field, np.zeros((1, n))])
-            m += 1
+            self.cell_field = np.vstack([self.cell_field, np.zeros((1, self.field_width))])
+            self.field_height += 1
         if c > 0:
             self.x_index_bias -= 1
-            self.cell_field = np.hstack([np.zeros((m, 1)), self.cell_field])
+            self.cell_field = np.hstack([np.zeros((self.field_height, 1)), self.cell_field])
+            self.field_width += 1
         if d > 0:
-            self.cell_field = np.hstack([self.cell_field, np.zeros((m, 1))])
-            
-    def add_cell(self, x, y):
+            self.cell_field = np.hstack([self.cell_field, np.zeros((self.field_height, 1))])
+            self.field_width += 1
+    
+    def get_field_shape(self):
+        self.m, self.n = np.shape(self.cell_field)
+    
+    def get_mouse_index_coord(self, x, y):
         m, n = np.shape(self.cell_field)
-        x_index_coord = round((x - self.x_screen_bias) // self.scale - self.x_index_bias)
-        y_index_coord = round((y - self.y_screen_bias) // self.scale - self.y_index_bias)
-        if m > y_index_coord >= 0 and n > x_index_coord >= 0:
+        self.x_mouse = x
+        self.y_mouse = y
+        self.x_index_coord = round((x - self.x_screen_bias) // self.scale - self.x_index_bias)
+        self.y_index_coord = round((y - self.y_screen_bias) // self.scale - self.y_index_bias)
+        
+    def add_cell(self, x, y):
+        self.get_mouse_index_coord(x, y)
+        if self.field_height > self.y_index_coord >= 0 and self.field_width > self.x_index_coord >= 0:
             #self.cell_field[y_index_coord, x_index_coord] = not self.cell_field[y_index_coord, x_index_coord]
             self.cell_field[y_index_coord, x_index_coord] = 1
         
@@ -186,7 +205,7 @@ scroll_down = 0
 paint = 0
 x_paint = 0
 y_paint = 0
-play1, play2 = 1, 1
+play1, play2 = 0, 1
 
 
 regime = 2        ############
@@ -234,6 +253,8 @@ if __name__ == '__main__':
                     FPS = max_FPS
                     paint = 1
                 if event.button == 5:
+                    x, y = pg.mouse.get_pos()
+                    game.get_mouse_index_coord(x, y)
                     game.scale *= 0.8
                     
             elif event.type == pg.MOUSEBUTTONUP:
@@ -244,12 +265,14 @@ if __name__ == '__main__':
                     FPS = start_FPS
                     paint = 0
                 if event.button == 4:
+                    x, y = pg.mouse.get_pos()
+                    game.get_mouse_index_coord(x, y)
                     game.scale *= 1.2
                     
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     play1 = not play1
-
+        
         if track_mouse == 1:
             x_cur, y_cur = pg.mouse.get_pos()
             game.x_screen_bias += x_cur - x_start
