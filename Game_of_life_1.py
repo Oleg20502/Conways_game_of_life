@@ -25,6 +25,7 @@ lightBlue = (64, 128, 255)
 GREEN = (0, 200, 64, 20)
 YELLOW = (225, 225, 0, 2)
 PINK = (230, 50, 230, 0)
+ORANGE = (255, 165, 0)
 brown = (105, 82, 62, 255)
 darkorange3 = (205, 102, 0, 255)
 rosybrown5 = (159, 125, 125, 255)
@@ -210,7 +211,7 @@ def draw(Rect, color, space):
         polygon(space, color, [r[0:2], r[2:4], r[4:6], r[6:8]])
 
 
-def print_text(txt, x, y, font_colour=(0, 0, 0), font_type='text.ttf', font_size=35):
+def print_text(txt, x, y, font_colour=(255, 255, 255), font_type='text.ttf', font_size=35):
     # Рисуем текст чёрного цвета, размера 35, с координатами x, y
     font_type = pg.font.Font(font_type, font_size)
     text = font_type.render(txt, True, font_colour)
@@ -386,15 +387,35 @@ def Colour_of_pixels():
 
             screen.blit(fon, (0, 0))
             button.draw_and_action(X / 8, Y / 4, 'Красный', 20)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Памагите!!!', 21)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 22)
+            button.draw_and_action(X / 8, (Y / 4 + 50), 'Синий', 21)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Зелёный', 22)
+            button.draw_and_action(X / 8, (Y / 4 + 160), 'Жёлтый', 23)
+            button.draw_and_action(X / 8, (Y / 4 + 210), 'Оранжевый', 24)
+            button.draw_and_action(X / 8, (Y / 4 + 260), 'Розовый', 25)
+            button.draw_and_action(X / 8, (Y / 4 + 310), 'Назад', 26)
             print_text('Game of live', X / 4, Y / 10)
     if button.regim == 20:
-        ()
+        global col
+        col = RED
+        Colour_of_pixels()
     if button.regim == 21:
-        ()
+        col = BLUE
+        Colour_of_pixels()
     if button.regim == 22:
+        col = GREEN
+        Colour_of_pixels()
+    if button.regim == 23:
+        col = YELLOW
+        Colour_of_pixels()
+    if button.regim == 24:
+        col = ORANGE
+        Colour_of_pixels()
+    if button.regim == 25:
+        col = PINK
+        Colour_of_pixels()
+    if button.regim == 26:
         Settings()
+
 
 
 
@@ -442,7 +463,8 @@ if __name__ == '__main__':
     play1, play2 = 1, 1
     t = 0
     menu = 1
-    fon = pg.image.load('fon.jpg')
+    col = RED
+    fon = pg.image.load('fonn.jpeg')
     button = Buttons(850, 50)
 
     main_menu()
@@ -512,7 +534,7 @@ if __name__ == '__main__':
             if t % period == 0:
                 game.run(play1 and play2)
                 # print('Поколение:', game.generation)
-                draw(game.rect_coordinetes(), (225, 0, 50), screen)
+                draw(game.rect_coordinetes(), col, screen)
 
                 pg.display.update()
                 screen.fill(WHITE)
