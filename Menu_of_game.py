@@ -5,8 +5,22 @@ import pygame as pg
 from Game_languages import Languages
 
 
+WHITE = (255, 255, 255)
+RED = (225, 0, 50)
+BLACK = (0, 0, 0)
+lightBLACK = (3, 3, 3)
+lightGreen = (0, 255, 0)
+BLUE = (0, 0, 255, 20)
+GRAY = (125, 125, 125)
+lightBlue = (64, 128, 255)
+GREEN = (0, 200, 64, 20)
+YELLOW = (225, 225, 0, 2)
+PINK = (230, 50, 230, 0)
+ORANGE = (255, 165, 0)
+
 L=Languages()
 L.Russian()
+
 
 def print_text(txt, x, y, screen, font_colour=(255, 255, 255), font_type='text.ttf', font_size=35):
     # Рисуем текст чёрного цвета, размера 35, с координатами x, y
@@ -36,11 +50,13 @@ class Menu():
         self.clock = pg.time.Clock()
         self.X = X
         self.Y =Y
-        self.FPS = 10
+        self.FPS = 9000
         self.screen = screen
         self.menu = 0
         self.button = Buttons(850, 50, self.screen)
         self.fon = pg.image.load('fonn.jpeg')
+        self.col = RED
+        self.col_fon_game = WHITE
 
     def main_menu(self):
         update_screen = 0
@@ -168,22 +184,22 @@ class Menu():
                 self.button.draw_and_action(self.X / 8, (self.Y / 4 + 310), 'Назад', 19)
                 print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
         if self.button.regim == 17:
-            #col_fon_game = RED
+            self.col_fon_game = RED
             self.Fon()
         if self.button.regim == 181:
-            #col_fon_game = BLUE
+            self.col_fon_game = BLUE
             self.Fon()
         if self.button.regim == 182:
-            #col_fon_game = GREEN
+            self.col_fon_game = GREEN
             self.Fon()
         if self.button.regim == 183:
-            #col_fon_game = YELLOW
+            self.col_fon_game = YELLOW
             self.Fon()
         if self.button.regim == 184:
-            #col_fon_game = ORANGE
+            self.col_fon_game = ORANGE
             self.Fon()
         if self.button.regim == 185:
-            #col_fon_game = WHITE
+            self.col_fon_game = WHITE
             self.Fon()
         if self.button.regim == 19:
             self.Settings()
@@ -208,19 +224,22 @@ class Menu():
                 self.button.draw_and_action(self.X / 8, (self.Y / 4 + 310), 'Назад', 26)
                 print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
         if self.button.regim == 20:
-            ()
+            self.col = RED
             self.Colour_of_pixels()
         if self.button.regim == 21:
-            #col = GREEN
+            self.col = BLUE
+            self.Colour_of_pixels()
+        if self.button.regim == 22:
+            self.col = GREEN
             self.Colour_of_pixels()
         if self.button.regim == 23:
-            #col = YELLOW
+            self.col = YELLOW
             self.Colour_of_pixels()
         if self.button.regim == 24:
-            #col = ORANGE
+            self.col = ORANGE
             self.Colour_of_pixels()
         if self.button.regim == 25:
-            #col = PINK
+            self.col = PINK
             self.Colour_of_pixels()
         if self.button.regim == 26:
             self.Settings()
