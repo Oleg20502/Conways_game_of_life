@@ -10,8 +10,6 @@
 import numpy as np
 import pygame as pg
 from ji import *
-
-
 import time as t
 from pygame.draw import polygon
 from Format_transform import load_and_transform
@@ -116,13 +114,11 @@ class Game_of_life():
         
         self.set_scale()
     
-    
     def run(self, run):
         if run:
             self.generation += 1
             self.broaden_field()
             self.update_generation()
-    
     
     def load_life(self):
         Path = 'Patterns/Gosper_Gun.txt'  # FIXME
@@ -133,24 +129,6 @@ class Game_of_life():
             self.cell_field = np.asarray(data_list, dtype='int')
         self.broaden_field(0)
 
-
-class Buttons:
-
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.regim = None
-
-    def draw_and_action(self, x, y, text, i):
-        mouse = pg.mouse.get_pos()
-        click = pg.mouse.get_pressed()
-        if x < mouse[0] < x + self.width and y < mouse[1] < y + self.height:
-            pg.draw.rect(screen, (30, 150, 100), (x, y, self.width, self.height))
-            if click[0] == 1:
-                self.regim = i
-        print_text(text, x + 8, y + 8)
-
-        
     def load(self):
         Path = 'Patterns/2c5-spaceship-gun-p416.rle'
         self.cells = load_and_transform(Path)
@@ -192,6 +170,24 @@ class Buttons:
 ###################
 #     VUSUALISATION
 ###################
+
+
+class Buttons:
+
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.regim = None
+
+    def draw_and_action(self, x, y, text, i):
+        mouse = pg.mouse.get_pos()
+        click = pg.mouse.get_pressed()
+        if x < mouse[0] < x + self.width and y < mouse[1] < y + self.height:
+            pg.draw.rect(screen, (30, 150, 100), (x, y, self.width, self.height))
+            if click[0] == 1:
+                self.regim = i
+        print_text(text, x + 8, y + 8)
+
 
 def draw(Rect, color, space):
     # Рисуем квадратик,соответствующий каждой клетке
@@ -445,7 +441,7 @@ y_paint = 0
 play1, play2 = 0, 1
 
 
-regime = 3        ############
+#regime = 3        ############
 
 
 def count_period(t, fps):
@@ -484,25 +480,32 @@ if __name__ == '__main__':
     game.setup(button.regim)
     print(menu)
     if menu == 0:
+        t1, t2, t3 = 0, 0, 0
+        measure1 = 0
+        measure2 = 0
         while not finished:
-            t += 1
-            period = count_period(FPS)
+            t1 += 1
+            period_run = count_period(Trun, FPS)
+            period_show = count_period(Tshow, FPS)
             clock.tick(FPS)
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     finished = True
-
+                    
                 elif event.type == pg.MOUSEBUTTONDOWN:
                     if event.button == 3:
                         track_mouse = 1
                         x_start, y_start = pg.mouse.get_pos()
-                    if event.button == 1:
+                    if event.button  == 1:
                         play2 = 0
                         FPS = max_FPS
                         paint = 1
                     if event.button == 5:
-                        print(event)
-
+                        x, y = pg.mouse.get_pos()
+                        game.change_index_bias(x, y)
+                        game.x_screen_bias, game.y_screen_bias = x, y
+                        game.scale = np.round(game.scale * 0.9, 2)
+            
                 elif event.type == pg.MOUSEBUTTONUP:
                     if event.button == 3:
                         track_mouse = 0
@@ -511,44 +514,44 @@ if __name__ == '__main__':
                         FPS = start_FPS
                         paint = 0
                     if event.button == 4:
-                        print(event)
-
+                        x, y = pg.mouse.get_pos()
+                        game.change_index_bias(x, y)
+                        game.x_screen_bias, game.y_screen_bias = x, y
+                        game.scale = np.round(game.scale * 1.1, 2)
+                        
                 if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_UP:
-                        arrow_up_pressed = 1
-                    elif event.key == pg.K_DOWN:
-                        arrow_down_pressed = 1
                     if event.key == pg.K_SPACE:
                         play1 = not play1
-
-                elif event.type == pg.KEYUP:
-                    if event.key == pg.K_UP:
-                        arrow_up_pressed = 0
-                    elif event.key == pg.K_DOWN:
-                        arrow_down_pressed = 0
-
+            
             if track_mouse == 1:
                 x_cur, y_cur = pg.mouse.get_pos()
                 game.x_screen_bias += x_cur - x_start
                 game.y_screen_bias += y_cur - y_start
                 x_start, y_start = x_cur, y_cur
-            if arrow_up_pressed:
-                game.scale *= 1.1
-            if arrow_down_pressed:
-                game.scale *= 0.9
             if paint and (not play1 or not play2):
-                x_paint, y_paint = pg.mouse.get_pos()
+                x_paint , y_paint = pg.mouse.get_pos()
+                print(game.get_mouse_index_coord(x_paint, y_paint))
                 game.add_cell(x_paint, y_paint)
-
-            if t % period == 0:
+                
+            if t1 % period_run == 0:  
+                time1 = t.time()
                 game.run(play1 and play2)
-                # print('Поколение:', game.generation)
-                draw(game.rect_coordinetes(), col, screen)
-
+                time2 = t.time()
+                t2 += 1
+                measure1 += time2 - time1
+                #print('Поколение:', game.generation)
+            if t1 % period_show == 0:
+                time3 = t.time()
+                draw(game.rect_coordinetes(), (225, 0, 50), screen)
                 pg.display.update()
-                screen.fill(col_fon_game)
-
+                screen.fill(WHITE)
+                time4 = t.time()
+                t3 += 1
+                measure2 += time4 - time3
+    
     pg.quit()
+    print('Жизнь', round(measure1/t2, 4))
+    print('Pygame', round(measure2/t3, 4))
 
 
 
