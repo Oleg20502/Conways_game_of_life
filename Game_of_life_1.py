@@ -60,32 +60,42 @@ class Game_of_life():
         self.generation = 0
         
     def update_generation(self):
+        #t1 = t.time()
         # Подсчет соседей для каждой клетки кроме граничных
         N = (self.cell_field[0:-2,0:-2] + self.cell_field[0:-2,1:-1] + self.cell_field[0:-2,2:] + self.cell_field[1:-1,0:-2] + 
             self.cell_field[1:-1,2:] + self.cell_field[2: ,0:-2] + self.cell_field[2: ,1:-1] + self.cell_field[2: ,2:])
         # Применение правил
         birth = np.logical_and(N == 3, np.logical_not(self.cell_field[1:-1,1:-1]))
         survive = np.logical_and(np.logical_or(N == 2, N == 3), self.cell_field[1:-1,1:-1])
-        self.cell_field[1:-1,1:-1] = birth | survive
+        self.cell_field[1:-1,1:-1] = np.logical_or(birth, survive)
+        #print('Новое поколение', t.time() - t1)
         
     def broaden_field(self, border = 1):
+        #t1 = t.time()
         # Расширяеет поле, т.е. массив клеток, если они подобрались близко к границам
-        a, b = np.sum(self.cell_field[border, :]), np.sum(self.cell_field[-1-border, :])
-        c, d = np.sum(self.cell_field[:, border]), np.sum(self.cell_field[:, -1-border])
-        if a > 0:
-            self.cell_field = np.vstack([np.zeros((1, self.field_width)), self.cell_field])
-            self.y_index_bias += 1
-            self.field_height += 1
-        if b > 0:
-            self.cell_field = np.vstack([self.cell_field, np.zeros((1, self.field_width))])
-            self.field_height += 1
-        if c > 0:
-            self.x_index_bias += 1
-            self.cell_field = np.hstack([np.zeros((self.field_height, 1)), self.cell_field])
-            self.field_width += 1
-        if d > 0:
-            self.cell_field = np.hstack([self.cell_field, np.zeros((self.field_height, 1))])
-            self.field_width += 1
+        a, b = np.int(np.any(self.cell_field[border, :])), np.int(np.any(self.cell_field[-1-border, :]))
+        c, d = np.int(np.any(self.cell_field[:, border])), np.int(np.any(self.cell_field[:, -1-border]))
+        self.field_height += a + b
+        self.field_width += c + d
+        self.y_index_bias += a
+        self.x_index_bias += c
+        narrow_field = self.cell_field
+        self.cell_field = np.zeros((self.field_height, self.field_width))
+        self.cell_field[a:self.field_height-b, c:self.field_width-d] = narrow_field
+        #print('Расширение поля', t.time() - t1)
+        
+    def adjust_field(self):
+        n1, m1 = self.get_mouse_index_coord(0, 0)
+        n2, m2 = self.get_mouse_index_coord(self.screen_x, self.screen_y)
+        x_zero, y_zero = min(0, n1), min(0, m1)
+        x_end, y_end = max(self.field_width, n2), max(self.field_height, m2)
+        old_width, old_height = self.field_width, self.field_height
+        self.field_width, self.field_height = x_end - x_zero, y_end - y_zero
+        old_field = self.cell_field
+        self.cell_field = np.zeros((self.field_height, self.field_width))
+        self.cell_field[-y_zero: old_height-y_zero, -x_zero: old_width-x_zero] = old_field
+        self.x_index_bias -= x_zero
+        self.y_index_bias -= y_zero
         
     def create_random_life(self):
         self.cell_field = np.zeros((self.field_height, self.field_width))
@@ -177,7 +187,6 @@ class Game_of_life():
         j, i = self.get_mouse_index_coord(x, y)
         if self.field_height > i >= 0 and self.field_width > j >= 0:
             self.cell_field[i, j] = 1
-
 
 
 ###################
@@ -502,7 +511,7 @@ if __name__ == '__main__':
                         x, y = pg.mouse.get_pos()
                         game.change_index_bias(x, y)
                         game.x_screen_bias, game.y_screen_bias = x, y
-                        game.scale = np.round(game.scale * 0.9, 2)
+                        game.scale = np.round(max(game.scale * 0.9, 0.5), 2)
             
                 elif event.type == pg.MOUSEBUTTONUP:
                     if event.button == 3:
@@ -515,7 +524,7 @@ if __name__ == '__main__':
                         x, y = pg.mouse.get_pos()
                         game.change_index_bias(x, y)
                         game.x_screen_bias, game.y_screen_bias = x, y
-                        game.scale = np.round(game.scale * 1.1, 2)
+                        game.scale = np.round(min(game.scale * 1.1, 50), 2)
                         
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_SPACE:
@@ -527,6 +536,7 @@ if __name__ == '__main__':
                 game.y_screen_bias += y_cur - y_start
                 x_start, y_start = x_cur, y_cur
             if paint and (not play1 or not play2):
+                game.adjust_field()
                 x_paint , y_paint = pg.mouse.get_pos()
                 game.add_cell(x_paint, y_paint)
                 
