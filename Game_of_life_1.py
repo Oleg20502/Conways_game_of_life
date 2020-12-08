@@ -542,9 +542,9 @@ if __name__ == '__main__':
                 #print('Поколение:', game.generation)
             if t1 % period_show == 0:
                 time3 = t.time()
-                draw(game.rect_coordinetes(), (225, 0, 50), screen)
+                draw(game.rect_coordinetes(), col, screen)
                 pg.display.update()
-                screen.fill(WHITE)
+                screen.fill(col_fon_game)
                 time4 = t.time()
                 t3 += 1
                 measure2 += time4 - time3
