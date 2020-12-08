@@ -363,14 +363,33 @@ def Fon():
                 update_screen = 1
 
             screen.blit(fon, (0, 0))
-            button.draw_and_action(X / 8, Y / 4, 'Заставка', 17)
-            button.draw_and_action(X / 8, (Y / 4 + 50), 'Памагите!!!', 18)
-            button.draw_and_action(X / 8, (Y / 4 + 110), 'Назад', 19)
+            button.draw_and_action(X / 8, Y / 4, 'Красный', 17)
+            button.draw_and_action(X / 8, (Y / 4 + 50), 'Синий', 181)
+            button.draw_and_action(X / 8, (Y / 4 + 110), 'Зелёный', 182)
+            button.draw_and_action(X / 8, (Y / 4 + 160), 'Жёлтый', 183)
+            button.draw_and_action(X / 8, (Y / 4 + 210), 'Оранжевый', 184)
+            button.draw_and_action(X / 8, (Y / 4 + 260), 'Белый', 185)
+            button.draw_and_action(X / 8, (Y / 4 + 310), 'Назад', 19)
             print_text('Game of live', X / 4, Y / 10)
     if button.regim == 17:
-        ()
-    if button.regim == 18:
-        ()
+        global col_fon_game
+        col_fon_game = RED
+        Fon()
+    if button.regim == 181:
+        col_fon_game = BLUE
+        Fon()
+    if button.regim == 182:
+        col_fon_game = GREEN
+        Fon()
+    if button.regim == 183:
+        col_fon_game = YELLOW
+        Fon()
+    if button.regim == 184:
+        col_fon_game = ORANGE
+        Fon()
+    if button.regim == 185:
+        col_fon_game = WHITE
+        Fon()
     if button.regim == 19:
         Settings()
 
@@ -466,7 +485,7 @@ if __name__ == '__main__':
     col = RED
     fon = pg.image.load('fonn.jpeg')
     button = Buttons(850, 50)
-
+    col_fon_game = WHITE
     main_menu()
 
 
@@ -537,7 +556,7 @@ if __name__ == '__main__':
                 draw(game.rect_coordinetes(), col, screen)
 
                 pg.display.update()
-                screen.fill(WHITE)
+                screen.fill(col_fon_game)
 
     pg.quit()
 
