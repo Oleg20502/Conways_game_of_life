@@ -151,9 +151,9 @@ class Menu():
                     update_screen = 1
 
                 self.screen.blit(self.fon, (0, 0))
-                self.button.draw_and_action(self.X / 8, self.Y / 4, 'Включить звук', 14)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), 'Выключить звук', 15)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), 'Назад', 16)
+                self.button.draw_and_action(self.X / 8, self.Y / 4, L.tons, 14)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.toffs, 15)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.naz, 16)
                 print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
         if self.button.regim == 14:
             pg.mixer.music.play(-1)
@@ -163,6 +163,9 @@ class Menu():
             self.Volume()
         if self.button.regim == 16:
             self.Settings()
+
+
+
 
     def Fon(self):
         update_screen = 0
@@ -175,13 +178,13 @@ class Menu():
                     update_screen = 1
 
                 self.screen.blit(self.fon, (0, 0))
-                self.button.draw_and_action(self.X / 8, self.Y / 4, 'Красный', 17)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), 'Синий', 181)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), 'Зелёный', 182)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), 'Жёлтый', 183)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), 'Оранжевый', 184)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 260), 'Белый', 185)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 310), 'Назад', 19)
+                self.button.draw_and_action(self.X / 8, self.Y / 4, L.red, 17)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.blue, 181)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.green, 182)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.yel, 183)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.ora, 184)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 260), L.wit, 185)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 310), L.naz, 19)
                 print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
         if self.button.regim == 17:
             self.col_fon_game = RED
@@ -215,31 +218,31 @@ class Menu():
                     update_screen = 1
 
                 self.screen.blit(self.fon, (0, 0))
-                self.button.draw_and_action(self.X / 8, self.Y / 4, 'Красный', 20)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), 'Синий', 21)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), 'Зелёный', 22)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), 'Жёлтый', 23)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), 'Оранжевый', 24)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 260), 'Розовый', 25)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 310), 'Назад', 26)
+                self.button.draw_and_action(self.X / 8, self.Y / 4, L.red, 20)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.blue, 181)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.green, 182)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.yel, 183)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.ora, 184)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 260), L.pink, 185)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 310), L.naz, 19)
                 print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
         if self.button.regim == 20:
             self.col = RED
             self.Colour_of_pixels()
-        if self.button.regim == 21:
+        if self.button.regim == 181:
             self.col = BLUE
             self.Colour_of_pixels()
-        if self.button.regim == 22:
+        if self.button.regim == 182:
             self.col = GREEN
             self.Colour_of_pixels()
-        if self.button.regim == 23:
+        if self.button.regim == 183:
             self.col = YELLOW
             self.Colour_of_pixels()
-        if self.button.regim == 24:
+        if self.button.regim == 184:
             self.col = ORANGE
             self.Colour_of_pixels()
-        if self.button.regim == 25:
+        if self.button.regim == 185:
             self.col = PINK
             self.Colour_of_pixels()
-        if self.button.regim == 26:
+        if self.button.regim == 19:
             self.Settings()
