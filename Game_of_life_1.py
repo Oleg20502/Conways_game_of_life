@@ -9,7 +9,6 @@
 
 import numpy as np
 import pygame as pg
-from ji import *
 import time as t
 from pygame.draw import polygon
 from Format_transform import load_and_transform
@@ -136,19 +135,33 @@ class Game_of_life():
     def set_scale(self):
         self.scale = np.round(np.min([self.screen_x / self.field_width,
                              self.screen_y / self.field_height]), 2)
+        
+    def hanlde_bounds(self, x, axis = 0):
+        upper_bound = None
+        if axis == 0:
+            upper_bound = self.field_width
+        elif axis == 1:
+            upper_bound = self.field_height
+        
+        if x < 0:
+            x = 0
+        elif x > upper_bound:
+            x = upper_bound
+        return x
     
     def rect_coordinetes(self):
         # Создание координат для каждой вершины кадждого квадратика
-        #n1, m1 = self.get_mouse_index_coord(0, 0)
-        #n2, m2 = self.get_mouse_index_coord(self.screen_x, self.screen_y)
-        #indeses = np.asarray(self.cell_field[m1:m2,n1:n2].nonzero()).T[:,::-1]
-        indeses = np.asarray(self.cell_field.nonzero()).T[:,::-1]
+        n1, m1 = self.get_mouse_index_coord(0, 0)
+        n2, m2 = self.get_mouse_index_coord(self.screen_x, self.screen_y)
+        n1, n2 = self.hanlde_bounds(n1, axis = 0), self.hanlde_bounds(n2, axis = 0)
+        m1, m2 = self.hanlde_bounds(m1, axis = 1), self.hanlde_bounds(m2, axis = 1)
+        indeses = np.asarray(self.cell_field[m1:m2,n1:n2].nonzero()).T[:,::-1]
         m, n = indeses.shape
         rect = np.hstack((indeses, indeses[:,0].reshape((m,1))+1, 
                                 indeses[:,1].reshape((m,1)), indeses+1, 
                                  indeses[:,0].reshape((m,1)), indeses[:,1].reshape((m,1))+1))
-        rect[:, ::2] = self.scale * (rect[:, ::2] - self.x_index_bias)+ self.x_screen_bias
-        rect[:, 1::2] = self.scale * (rect[:, 1::2] - self.y_index_bias) + self.y_screen_bias
+        rect[:, ::2] = self.scale * (rect[:, ::2] - self.x_index_bias + n1)+ self.x_screen_bias
+        rect[:, 1::2] = self.scale * (rect[:, 1::2] - self.y_index_bias + m1) + self.y_screen_bias
         return rect
         
     def change_index_bias(self, x, y):
@@ -165,7 +178,7 @@ class Game_of_life():
         if self.field_height > i >= 0 and self.field_width > j >= 0:
             self.cell_field[i, j] = 1
 
-        
+
 
 ###################
 #     VUSUALISATION
@@ -194,13 +207,11 @@ def draw(Rect, color, space):
     for r in Rect:
         polygon(space, color, [r[0:2], r[2:4], r[4:6], r[6:8]])
 
-
 def print_text(txt, x, y, font_colour=(255, 255, 255), font_type='text.ttf', font_size=35):
     # Рисуем текст чёрного цвета, размера 35, с координатами x, y
     font_type = pg.font.Font(font_type, font_size)
     text = font_type.render(txt, True, font_colour)
     screen.blit(text, (x, y))
-
 
 def main_menu():
     update_screen = 0
@@ -226,7 +237,6 @@ def main_menu():
         Settings()
     if button.regim == 5:
         exit()
-
 
 def Settings():
     update_screen = 0
@@ -420,13 +430,10 @@ def Colour_of_pixels():
         Settings()
 
 
-
-
-
 X, Y = 1000, 550
-start_FPS = 30
+start_FPS = 60
 max_FPS = 250
-Trun = 30
+Trun = 60
 Tshow = 20
 x_start, y_start = 0, 0
 x_cur, y_cur = 0, 0
@@ -440,13 +447,8 @@ x_paint = 0
 y_paint = 0
 play1, play2 = 0, 1
 
-
-#regime = 3        ############
-
-
 def count_period(t, fps):
     return round(fps / t)
-
 
 if __name__ == '__main__':
     game = Game_of_life(X, Y)
@@ -474,11 +476,7 @@ if __name__ == '__main__':
     col_fon_game = WHITE
     main_menu()
 
-
-
-
     game.setup(button.regim)
-    print(menu)
     if menu == 0:
         t1, t2, t3 = 0, 0, 0
         measure1 = 0
@@ -530,7 +528,6 @@ if __name__ == '__main__':
                 x_start, y_start = x_cur, y_cur
             if paint and (not play1 or not play2):
                 x_paint , y_paint = pg.mouse.get_pos()
-                print(game.get_mouse_index_coord(x_paint, y_paint))
                 game.add_cell(x_paint, y_paint)
                 
             if t1 % period_run == 0:  
