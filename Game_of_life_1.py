@@ -83,6 +83,18 @@ class Game_of_life():
         self.cell_field = np.zeros((self.field_height, self.field_width))
         self.cell_field[a:self.field_height-b, c:self.field_width-d] = narrow_field
         #print('Расширение поля', t.time() - t1)
+    
+    def shrink_field(self):
+        chunk = 20
+        a, b = np.all(self.cell_field[:chunk+1, :] == 0), np.all(self.cell_field[-chunk-1:, :] == 0)
+        c, d = np.all(self.cell_field[:, :chunk+1] == 0), np.all(self.cell_field[:, -chunk-1:] == 0)
+        x_start, y_start = chunk * c, chunk * a
+        x_end, y_end = self.field_width - chunk * d, self.field_height - chunk * b
+        self.cell_field = self.cell_field[ y_start: y_end, x_start: x_end]
+        self.field_width = x_end - x_start
+        self.field_height = y_end - y_start
+        self.x_index_bias -= x_start
+        self.y_index_bias -= y_start
         
     def adjust_field(self):
         n1, m1 = self.get_mouse_index_coord(0, 0)
@@ -128,6 +140,7 @@ class Game_of_life():
             self.generation += 1
             self.broaden_field()
             self.update_generation()
+            self.shrink_field()
     
     def load_life(self):
         Path = 'Patterns/Gosper_Gun.txt'  # FIXME
@@ -147,16 +160,11 @@ class Game_of_life():
                              self.screen_y / self.field_height]), 2)
         
     def hanlde_bounds(self, x, axis = 0):
-        upper_bound = None
-        if axis == 0:
-            upper_bound = self.field_width
-        elif axis == 1:
-            upper_bound = self.field_height
-        
-        if x < 0:
-            x = 0
-        elif x > upper_bound:
-            x = upper_bound
+        if axis != 0 and axis != 1:
+            raise 'Axis should be 0 or 1'
+        upper_bound = (1 - axis) * self.field_width + axis * self.field_height
+        x = max(x, 0)
+        x = min(x, upper_bound)
         return x
     
     def rect_coordinetes(self):
