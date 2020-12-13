@@ -23,14 +23,13 @@ L = Languages(1)
 L.Russian()
 # Включаем русский язык по умолчанию
 
-
-
-
 def print_text(txt, x, y, screen, font_colour=(255, 255, 255), font_type='text.ttf', font_size=35):
     # Рисуем текст чёрного цвета, размера 35, с координатами x, y
     font_type = pg.font.Font(font_type, font_size)
     text = font_type.render(txt, True, font_colour)
     screen.blit(text, (x, y))
+
+
 
 class Buttons():
     # Класс кнопок. На вход принимает высоту - width и ширину - height кнопки, а также экран, на котором будут нарисованны кнопки - screen.
@@ -41,6 +40,7 @@ class Buttons():
         self.height = height
         self.regim = None #Глобальное значение индикатора действия кнопки
         self.screen = screen
+
 
     def draw_and_action(self, x, y, text, regim):
         # Кнопка с активным действием, на вход координаты левого верхнего конца - x и y, надпись - text и regim - индикатор действия.
@@ -62,6 +62,8 @@ class Buttons():
 
 class Menu():
     # Класс меню. Класс отвечающий за отрисовку и работу меню. на вход размеры окна дисплея - X и Y, а также сам дисплей.
+
+
     def __init__(self, X, Y, screen):
         self.clock = pg.time.Clock()
         self.X = X
@@ -79,6 +81,8 @@ class Menu():
         self.COLNAMESRUS = {1: 'Красный', 2: 'Синий', 3: 'Зелёный', 4: 'Жёлтый', 5: 'Белый'}
         self.COLNAMESENG = {1: 'RED', 2: 'BLUE', 3: 'GREEN', 4: 'YELLOW', 5: 'WHITE'}
 
+
+
     # self.clock.tick(7) нужно чтобы создать задержку, чтобы нажатие на кнопку в одном разделе меню, не прожималось нечайно в другом при долгом нажатии
     def main_menu(self):
         # Отрисовка главного окна меню
@@ -88,11 +92,11 @@ class Menu():
             pg.event.get()
 
             self.screen.blit(self.fon, (0, 0))
-            self.button.draw_and_action(self.X / 8, self.Y / 4, L.zapp, 1)
-            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.zapz, 2)
-            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.zapn, 3)
-            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.nas, 4)
-            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.v, 5)
+            self.button.draw_and_action(self.X / 8, self.Y / 4, L.zapp, 1) # Кнопка запуска произвольного поля
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.zapz, 2) # Кнопка запуска загруженного из файла
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.zapn, 3) # Кнопка запуска режима рисования своего поля
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.nastr, 4) # Кнопка настроек
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.exit, 5) # Кнопка выхода
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
 
             if self.button.regim == 1:
@@ -109,6 +113,8 @@ class Menu():
                 self.Settings()
             if self.button.regim == 5:
                 exit()
+
+
 
     def Settings(self):
         # Отрисовка меню настроек
@@ -141,6 +147,7 @@ class Menu():
                 self.clock.tick(7)
                 self.Colour_of_pixels()
 
+
     def Language(self):
         # Отрисовка меню выбора языка
         while True:
@@ -161,6 +168,7 @@ class Menu():
             if self.button.regim == 13:
                 self.clock.tick(7)
                 break
+
 
     def Volume(self):
         # Отрисовка меню громкости
@@ -186,6 +194,7 @@ class Menu():
             if self.button.regim == 16:
                 self.clock.tick(7)
                 break
+
 
     def Colour_of_fon(self):
         # Отрисовка меню выбора цвета фона
