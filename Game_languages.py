@@ -3,6 +3,11 @@
 
 class Languages():
 
+    def __init__(self, regim_of_sound):
+        self.regim_of_sound = regim_of_sound
+
+
+
     def Russian(self):
         self.zapp = 'Запуск произвольного поля'
         self.zapz = 'Запуск загруженного из файла поля'
@@ -25,7 +30,16 @@ class Languages():
         self.wit = 'Белый'
         self.pink = 'Розовый'
         self.green = 'Зелёный'
+        self.chlan = 'ВЫБРАН РУССКИЙ ЯЗЫК'
+        self.chcol = 'ВЫБРАННЫЙ ЦВЕТ'
         self.lang = 'rus'
+        if self.regim_of_sound == 1:
+            self.sound = 'Звук включён'
+        elif self.regim_of_sound == 0:
+            self.sound = 'Звук выключён'
+
+
+
 
 
     def English(self):
@@ -50,4 +64,32 @@ class Languages():
         self.wit = 'White'
         self.pink = 'Pink'
         self.green = 'Green'
+        self.chlan = 'SELECTED ENGLISH LANGUAGE'
+        self.chcol = 'CHOOSEN COLOUR'
         self.lang = 'eng'
+        if self.regim_of_sound == 1:
+            self.sound = 'Sound on'
+        elif self.regim_of_sound == 0:
+            self.sound = 'Sound off'
+
+
+
+    def Sound(self, i):
+        if i == 1 and self.lang == 'rus':
+            self.sound = 'Звук включён'
+            self.regim_of_sounf = 1
+        elif i == 1 and self.lang == 'eng':
+            self.sound = 'Sound on'
+            self.regim_of_sounf = 1
+        elif i == 0 and self.lang == 'rus':
+            self.sound = 'Звук выключен'
+            self.regim_of_sounf = 0
+        elif i == 0 and self.lang == 'eng':
+            self.sound = 'Sound off'
+            self.regim_of_sounf = 0
+
+
+
+
+
+
