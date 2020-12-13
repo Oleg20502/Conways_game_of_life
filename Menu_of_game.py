@@ -71,202 +71,160 @@ class Menu():
         self.col_fon_game = WHITE
         self.Chcolfon = L.wit
         self.Chcolpx = L.red
+        self.colors = {1: RED, 2: BLUE, 3: GREEN, 4: YELLOW, 5: PINK}
+        self.COLNAMESRUS = {1: 'Красный', 2: 'Синий', 3: 'Зелёный', 4: 'Жёлтый', 5: 'Белый'}
+        self.COLNAMESENG = {1: 'RED', 2: 'BLUE', 3: 'GREEN', 4: 'YELLOW', 5: 'WHITE'}
+
 
     def main_menu(self):
-        update_screen = 0
-        while update_screen == 0:
+        while True:
             self.clock.tick(self.FPS)
-            for event in pg.event.get():
-                if event.type != pg.MOUSEBUTTONDOWN:
-                    pg.display.update()
-                if event.type == pg.MOUSEBUTTONDOWN:
-                    update_screen = 1
+            pg.display.update()
+            pg.event.get()
 
-                self.screen.blit(self.fon, (0, 0))
-                self.button.draw_and_action(self.X / 8, self.Y / 4, L.zapp, 1)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.zapz, 2)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.zapn, 3)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.nas, 4)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.v, 5)
-                print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
-        if self.button.regim == 1:
-            self.menu = 1
-        if self.button.regim == 2:
-            self.menu = 2
-        if self.button.regim == 3:
-            self.menu = 3
-        if self.button.regim == 4:
-            self.Settings()
-        if self.button.regim == 5:
-            exit()
+            self.screen.blit(self.fon, (0, 0))
+            self.button.draw_and_action(self.X / 8, self.Y / 4, L.zapp, 1)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.zapz, 2)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.zapn, 3)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.nas, 4)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.v, 5)
+            print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
+
+            if self.button.regim == 1:
+                self.menu = 1
+                break
+            if self.button.regim == 2:
+                self.menu = 2
+                break
+            if self.button.regim == 3:
+                self.menu = 3
+                break
+            if self.button.regim == 4:
+                self.clock.tick(7)
+                self.Settings()
+            if self.button.regim == 5:
+                exit()
 
     def Settings(self):
-        update_screen = 0
-        while update_screen == 0:
+        while True:
             self.clock.tick(self.FPS)
-            for event in pg.event.get():
-                if event.type != pg.MOUSEBUTTONDOWN:
-                    pg.display.update()
-                if event.type == pg.MOUSEBUTTONDOWN:
-                    update_screen = 1
+            pg.display.update()
+            pg.event.get()
 
-                self.screen.blit(self.fon, (0, 0))
-                self.button.draw_and_action(self.X / 8, self.Y / 4, L.naz, 6)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.yz, 7)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.s, 8)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.zast, 9)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.vcp, 10)
-                print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
-        if self.button.regim == 6:
-            self.main_menu()
-        if self.button.regim == 7:
-            self.Language()
-        if self.button.regim == 8:
-            self.Volume()
-        if self.button.regim == 9:
-            self.Fon()
-        if self.button.regim == 10:
-            self.Colour_of_pixels()
+            self.screen.blit(self.fon, (0, 0))
+            self.button.draw_and_action(self.X / 8, self.Y / 4, L.naz, 6)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.yz, 7)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.s, 8)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.zast, 9)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.vcp, 10)
+            print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
+            if self.button.regim == 6:
+                self.clock.tick(7)
+                break
+            if self.button.regim == 7:
+                self.clock.tick(7)
+                self.Language()
+            if self.button.regim == 8:
+                self.clock.tick(7)
+                self.Volume()
+            if self.button.regim == 9:
+                self.clock.tick(7)
+                self.Fon()
+            if self.button.regim == 10:
+                self.clock.tick(7)
+                self.Colour_of_pixels()
 
     def Language(self):
-        update_screen = 0
-        while update_screen == 0:
+        while True:
             self.clock.tick(self.FPS)
-            for event in pg.event.get():
-                if event.type != pg.MOUSEBUTTONDOWN:
-                    pg.display.update()
-                if event.type == pg.MOUSEBUTTONDOWN:
-                    update_screen = 1
+            pg.display.update()
+            pg.event.get()
 
-                self.screen.blit(self.fon, (0, 0))
-                self.button.draw_and_action(self.X / 8, self.Y / 4, L.rus, 11)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.eng, 12)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.naz, 13)
-                self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), L.chlan)
-                print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
-        if self.button.regim == 11:
-            L.Russian()
-            self.Language()
-        if self.button.regim == 12:
-            L.English()
-            self.Language()
-        if self.button.regim == 13:
-            self.Settings()
-
-
+            self.screen.blit(self.fon, (0, 0))
+            self.button.draw_and_action(self.X / 8, self.Y / 4, L.rus, 11)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.eng, 12)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.naz, 13)
+            self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), L.chlan)
+            print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
+            if self.button.regim == 11:
+                L.Russian()
+            if self.button.regim == 12:
+                L.English()
+            if self.button.regim == 13:
+                self.clock.tick(7)
+                break
 
     def Volume(self):
-        update_screen = 0
-        while update_screen == 0:
+        while True:
             self.clock.tick(self.FPS)
-            for event in pg.event.get():
-                if event.type != pg.MOUSEBUTTONDOWN:
-                    pg.display.update()
-                if event.type == pg.MOUSEBUTTONDOWN:
-                    update_screen = 1
+            pg.display.update()
+            pg.event.get()
 
-                self.screen.blit(self.fon, (0, 0))
-                self.button.draw_and_action(self.X / 8, self.Y / 4, L.tons, 14)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.toffs, 15)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.naz, 16)
-                self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), L.sound)
-                print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
-        if self.button.regim == 14:
-            L.Sound(1)
-            L.regim_of_sound = 1
-            pg.mixer.music.play(-1)
-            self.Volume()
-        if self.button.regim == 15:
-            L.Sound(0)
-            L.regim_of_sound = 0
-            pg.mixer.music.pause()
-            self.Volume()
-        if self.button.regim == 16:
-            self.Settings()
-
-
-
+            self.screen.blit(self.fon, (0, 0))
+            self.button.draw_and_action(self.X / 8, self.Y / 4, L.tons, 14)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.toffs, 15)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.naz, 16)
+            self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), L.sound)
+            print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
+            if self.button.regim == 14:
+                L.Sound(1)
+                L.regim_of_sound = 1
+                pg.mixer.music.play(-1)
+            if self.button.regim == 15:
+                L.Sound(0)
+                L.regim_of_sound = 0
+                pg.mixer.music.pause()
+            if self.button.regim == 16:
+                self.clock.tick(7)
+                break
 
     def Fon(self):
-        update_screen = 0
-        while update_screen == 0:
+        while True:
             self.clock.tick(self.FPS)
-            for event in pg.event.get():
-                if event.type != pg.MOUSEBUTTONDOWN:
-                    pg.display.update()
-                if event.type == pg.MOUSEBUTTONDOWN:
-                    update_screen = 1
+            pg.display.update()
+            pg.event.get()
 
-                self.screen.blit(self.fon, (0, 0))
-                self.button.draw_and_action(self.X / 8, self.Y / 4, L.red, 17)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.blue, 181)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.green, 182)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.yel, 183)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.wit, 184)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 260), L.naz, 19)
-                self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), (L.chcol + ' ' + L.COLF))
-                print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
-        if self.button.regim == 17:
-            self.col_fon_game = RED
-            L.COLF = L.red
-            self.Fon()
-        if self.button.regim == 181:
-            self.col_fon_game = BLUE
-            L.COLF = L.blue
-            self.Fon()
-        if self.button.regim == 182:
-            self.col_fon_game = GREEN
-            L.COLF = L.green
-            self.Fon()
-        if self.button.regim == 183:
-            self.col_fon_game = YELLOW
-            L.COLF = L.yel
-            self.Fon()
-        if self.button.regim == 184:
-            self.col_fon_game = WHITE
-            L.COLF = L.wit
-            self.Fon()
-        if self.button.regim == 19:
-            self.Settings()
+            self.screen.blit(self.fon, (0, 0))
+            self.button.draw_and_action(self.X / 8, self.Y / 4, L.red, 1)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.blue, 2)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.green, 3)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.yel, 4)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.wit, 5)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 260), L.naz, 19)
+            self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), (L.chcol + ' ' + L.COLF))
+            print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
+            if self.button.regim in self.colors and L.lang == 'rus':
+                self.self.col_fon_game = self.colors[self.button.regim]
+                L.COLP = self.COLNAMESRUS[self.button.regim]
+            elif self.button.regim in self.colors and L.lang == 'eng':
+                self.self.col_fon_game = self.colors[self.button.regim]
+                L.COLP = self.COLNAMESENG[self.button.regim]
+            elif self.button.regim == 19:
+                self.clock.tick(7)
+                break
+
 
     def Colour_of_pixels(self):
-        update_screen = 0
-        while update_screen == 0:
+        while True:
             self.clock.tick(self.FPS)
-            for event in pg.event.get():
-                if event.type != pg.MOUSEBUTTONDOWN:
-                    pg.display.update()
-                if event.type == pg.MOUSEBUTTONDOWN:
-                    update_screen = 1
+            pg.display.update()
+            pg.event.get()
 
-                self.screen.blit(self.fon, (0, 0))
-                self.button.draw_and_action(self.X / 8, self.Y / 4, L.red, 1)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.blue, 2)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.green, 3)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.yel, 4)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.pink, 5)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 260), L.naz, 6)
-                self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), (L.chcol + ' ' + L.COLP))
-                print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
-        if self.button.regim == 1:
-            self.col = RED
-            L.COLP = L.red
-            self.Colour_of_pixels()
-        if self.button.regim == 2:
-            self.col = BLUE
-            L.COLP = L.blue
-            self.Colour_of_pixels()
-        if self.button.regim == 3:
-            self.col = GREEN
-            L.COLP = L.green
-            self.Colour_of_pixels()
-        if self.button.regim == 4:
-            self.col = YELLOW
-            L.COLP = L.yel
-            self.Colour_of_pixels()
-        if self.button.regim == 5:
-            self.col = PINK
-            L.COLP = L.pink
-            self.Colour_of_pixels()
-        if self.button.regim == 6:
-            self.Settings()
+            self.screen.blit(self.fon, (0, 0))
+            self.button.draw_and_action(self.X / 8, self.Y / 4, L.red, 1)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.blue, 2)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.green, 3)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.yel, 4)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.wit, 5)
+            self.button.draw_and_action(self.X / 8, (self.Y / 4 + 260), L.naz, 19)
+            self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), (L.chcol + ' ' + L.COLP))
+            print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
+            if self.button.regim in self.colors and L.lang == 'rus':
+                self.col = self.colors[self.button.regim]
+                L.COLP = self.COLNAMESRUS[self.button.regim]
+            elif self.button.regim in self.colors and L.lang == 'eng':
+                self.col = self.colors[self.button.regim]
+                L.COLP = self.COLNAMESENG[self.button.regim]
+            elif self.button.regim == 19:
+                self.clock.tick(7)
+                break
