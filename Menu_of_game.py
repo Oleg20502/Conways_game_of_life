@@ -18,9 +18,11 @@ YELLOW = (225, 225, 0, 2)
 PINK = (230, 50, 230, 0)
 ORANGE = (255, 165, 0)
 
-L=Languages(1)
+L = Languages(1)
+# Создаём экземпляр класса Languages, 1 означает, что по умолчанию звук включен
 L.Russian()
-L.Sound(1)
+# Включаем русский язык по умолчанию
+
 
 
 
@@ -31,52 +33,55 @@ def print_text(txt, x, y, screen, font_colour=(255, 255, 255), font_type='text.t
     screen.blit(text, (x, y))
 
 class Buttons():
+    # Класс кнопок. На вход принимает высоту - width и ширину - height кнопки, а также экран, на котором будут нарисованны кнопки - screen.
+    # Содержит методы создания кнопок 2-х типов: draw_and_action, кноака с активным действием и no_action_button - кнопка без закреплённого действия.
 
     def __init__(self, width, height, screen):
         self.width = width
         self.height = height
-        self.regim = None
+        self.regim = None #Глобальное значение индикатора действия кнопки
         self.screen = screen
 
-    def draw_and_action(self, x, y, text, i):
+    def draw_and_action(self, x, y, text, regim):
+        # Кнопка с активным действием, на вход координаты левого верхнего конца - x и y, надпись - text и regim - индикатор действия.
         mouse = pg.mouse.get_pos()
         click = pg.mouse.get_pressed()
         if x < mouse[0] < x + self.width and y < mouse[1] < y + self.height:
+            # Если курсор наведён на кнопку, она подсвечивается
             pg.draw.rect(self.screen, (30, 150, 100), (x, y, self.width, self.height))
             if click[0] == 1:
-                self.regim = i
+                self.regim = regim
         print_text(text, x + 8, y + 8, self.screen)
 
 
     def no_action_button(self, x, y, text):
+        # Кнопка без активного действия. на вход принемает только положение левого верхнего конца - x, y и текст - text
         print_text(text, x + 8, y + 8, self.screen)
 
-    def no_action_button_color(self, x, y, text):
-        pg.draw.rect(self.screen, (30, 150, 100), (x, y, self.width, self.height))
-        print_text(text, x + 8, y + 8, self.screen)
 
 
 class Menu():
+    # Класс меню. Класс отвечающий за отрисовку и работу меню. на вход размеры окна дисплея - X и Y, а также сам дисплей.
     def __init__(self, X, Y, screen):
         self.clock = pg.time.Clock()
         self.X = X
         self.Y =Y
-        self.FPS = 9000
+        self.FPS = 90
         self.screen = screen
-        self.menu = 0
+        self.menu = 0 # Глобальная переменная в классе, может принемать значение 0 и 1, по умолчанию 0, при нажатии на одну из кнопок, запускающих игру - 1.
         self.button = Buttons(850, 50, self.screen)
         self.button_no_action = Buttons(150, 150, self.screen)
-        self.fon = pg.image.load('fonn.jpeg')
-        self.col = RED
-        self.col_fon_game = WHITE
-        self.Chcolfon = L.wit
-        self.Chcolpx = L.red
-        self.colors = {1: RED, 2: BLUE, 3: GREEN, 4: YELLOW, 5: PINK}
+        self.fon = pg.image.load('fonn.jpeg') # Загрузка фона
+        self.col = RED # Цвет писелей по умолчанию
+        self.col_fon_game = WHITE # Цвет фона по умолчанию
+        self.colors = {1: RED, 2: BLUE, 3: GREEN, 4: YELLOW, 5: PINK} # Цвета, которые присваиваются фону или пикселям
+        # Названия цветов на русском и английском для отображения их в состоянии
         self.COLNAMESRUS = {1: 'Красный', 2: 'Синий', 3: 'Зелёный', 4: 'Жёлтый', 5: 'Белый'}
         self.COLNAMESENG = {1: 'RED', 2: 'BLUE', 3: 'GREEN', 4: 'YELLOW', 5: 'WHITE'}
 
-
+    # self.clock.tick(7) нужно чтобы создать задержку, чтобы нажатие на кнопку в одном разделе меню, не прожималось нечайно в другом при долгом нажатии
     def main_menu(self):
+        # Отрисовка главного окна меню
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
@@ -106,19 +111,21 @@ class Menu():
                 exit()
 
     def Settings(self):
+        # Отрисовка меню настроек
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
             pg.event.get()
-
+            # Выводим кнопки на экран
             self.screen.blit(self.fon, (0, 0))
-            self.button.draw_and_action(self.X / 8, self.Y / 4, L.naz, 6)
+            self.button.draw_and_action(self.X / 8, self.Y / 4, L.naz, 6) # Здесь и далее 6 - это номер режима, т. е. индикатор некоторого действия.
             self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.yz, 7)
             self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.s, 8)
             self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.zast, 9)
             self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.vcp, 10)
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
             if self.button.regim == 6:
+                # Иникатор действия 6 - происходит выполнение дейстрия кнопки L.naz
                 self.clock.tick(7)
                 break
             if self.button.regim == 7:
@@ -129,17 +136,18 @@ class Menu():
                 self.Volume()
             if self.button.regim == 9:
                 self.clock.tick(7)
-                self.Fon()
+                self.Colour_of_fon()
             if self.button.regim == 10:
                 self.clock.tick(7)
                 self.Colour_of_pixels()
 
     def Language(self):
+        # Отрисовка меню выбора языка
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
             pg.event.get()
-
+            # Выводим кнопки на экран
             self.screen.blit(self.fon, (0, 0))
             self.button.draw_and_action(self.X / 8, self.Y / 4, L.rus, 11)
             self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.eng, 12)
@@ -155,11 +163,12 @@ class Menu():
                 break
 
     def Volume(self):
+        # Отрисовка меню громкости
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
             pg.event.get()
-
+            # Выводим кнопки на экран
             self.screen.blit(self.fon, (0, 0))
             self.button.draw_and_action(self.X / 8, self.Y / 4, L.tons, 14)
             self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.toffs, 15)
@@ -178,12 +187,13 @@ class Menu():
                 self.clock.tick(7)
                 break
 
-    def Fon(self):
+    def Colour_of_fon(self):
+        # Отрисовка меню выбора цвета фона
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
             pg.event.get()
-
+            # Выводим кнопки на экран
             self.screen.blit(self.fon, (0, 0))
             self.button.draw_and_action(self.X / 8, self.Y / 4, L.red, 1)
             self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.blue, 2)
@@ -205,11 +215,12 @@ class Menu():
 
 
     def Colour_of_pixels(self):
+        # Отрисовка меню выбора цвета пикселей
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
             pg.event.get()
-
+            # Выводим кнопки на экран
             self.screen.blit(self.fon, (0, 0))
             self.button.draw_and_action(self.X / 8, self.Y / 4, L.red, 1)
             self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.blue, 2)
