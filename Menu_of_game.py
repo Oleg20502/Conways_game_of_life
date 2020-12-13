@@ -194,11 +194,11 @@ class Menu():
             self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), (L.chcol + ' ' + L.COLF))
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
             if self.button.regim in self.colors and L.lang == 'rus':
-                self.self.col_fon_game = self.colors[self.button.regim]
-                L.COLP = self.COLNAMESRUS[self.button.regim]
+                self.col_fon_game = self.colors[self.button.regim]
+                L.COLF = self.COLNAMESRUS[self.button.regim]
             elif self.button.regim in self.colors and L.lang == 'eng':
-                self.self.col_fon_game = self.colors[self.button.regim]
-                L.COLP = self.COLNAMESENG[self.button.regim]
+                self.col_fon_game = self.colors[self.button.regim]
+                L.COLF = self.COLNAMESENG[self.button.regim]
             elif self.button.regim == 19:
                 self.clock.tick(7)
                 break

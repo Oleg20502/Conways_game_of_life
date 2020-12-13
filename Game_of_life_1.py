@@ -12,7 +12,7 @@ import pygame as pg
 import time as t
 from pygame.draw import polygon
 from Format_transform import load_and_transform
-from Menu_of_game import Menu
+from Menu_of_game import Menu, Buttons
 
 WHITE = (255, 255, 255)
 RED = (225, 0, 50)
@@ -221,7 +221,7 @@ if __name__ == '__main__':
     clock = pg.time.Clock()
     screen.fill(WHITE)
     pg.display.set_caption('Conways_game_of_life')
-    pg.mixer.music.load('sound in menu.mp3')
+    pg.mixer.music.load('sound in menu.ogg')
     pg.mixer.music.set_volume(0.35)
     pg.mixer.music.play(-1)
     # устанавливает инконку приложения (иконку надо закинуть в одну папку с содержимым игры, название иконки iconofgame.png )
@@ -237,6 +237,7 @@ if __name__ == '__main__':
     col_fon_game = WHITE
     M = Menu(X, Y, screen)
     M.main_menu()
+    BUT = Buttons(50, 50, screen)
 
 
 
