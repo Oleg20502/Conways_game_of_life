@@ -202,27 +202,29 @@ class Menu():
                 self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.blue, 181)
                 self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.green, 182)
                 self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.yel, 183)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.wit, 185)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.wit, 184)
                 self.button.draw_and_action(self.X / 8, (self.Y / 4 + 260), L.naz, 19)
-                self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), L.chcol)
+                self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), (L.chcol + ' ' + L.COLF))
                 print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
         if self.button.regim == 17:
             self.col_fon_game = RED
+            L.COLF = L.red
             self.Fon()
         if self.button.regim == 181:
             self.col_fon_game = BLUE
+            L.COLF = L.blue
             self.Fon()
         if self.button.regim == 182:
             self.col_fon_game = GREEN
+            L.COLF = L.green
             self.Fon()
         if self.button.regim == 183:
             self.col_fon_game = YELLOW
+            L.COLF = L.yel
             self.Fon()
         if self.button.regim == 184:
-            self.col_fon_game = ORANGE
-            self.Fon()
-        if self.button.regim == 185:
             self.col_fon_game = WHITE
+            L.COLF = L.wit
             self.Fon()
         if self.button.regim == 19:
             self.Settings()
@@ -238,31 +240,33 @@ class Menu():
                     update_screen = 1
 
                 self.screen.blit(self.fon, (0, 0))
-                self.button.draw_and_action(self.X / 8, self.Y / 4, L.red, 20)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.blue, 181)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.green, 182)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.yel, 183)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.pink, 185)
-                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 260), L.naz, 19)
-                self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), L.chcol)
+                self.button.draw_and_action(self.X / 8, self.Y / 4, L.red, 1)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 50), L.blue, 2)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 110), L.green, 3)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.yel, 4)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.pink, 5)
+                self.button.draw_and_action(self.X / 8, (self.Y / 4 + 260), L.naz, 6)
+                self.button_no_action.no_action_button(self.X / 8, (self.Y - 100), (L.chcol + ' ' + L.COLP))
                 print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
-        if self.button.regim == 20:
+        if self.button.regim == 1:
             self.col = RED
+            L.COLP = L.red
             self.Colour_of_pixels()
-        if self.button.regim == 181:
+        if self.button.regim == 2:
             self.col = BLUE
+            L.COLP = L.blue
             self.Colour_of_pixels()
-        if self.button.regim == 182:
+        if self.button.regim == 3:
             self.col = GREEN
+            L.COLP = L.green
             self.Colour_of_pixels()
-        if self.button.regim == 183:
+        if self.button.regim == 4:
             self.col = YELLOW
+            L.COLP = L.yel
             self.Colour_of_pixels()
-        if self.button.regim == 184:
-            self.col = ORANGE
-            self.Colour_of_pixels()
-        if self.button.regim == 185:
+        if self.button.regim == 5:
             self.col = PINK
+            L.COLP = L.pink
             self.Colour_of_pixels()
-        if self.button.regim == 19:
+        if self.button.regim == 6:
             self.Settings()

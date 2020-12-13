@@ -31,7 +31,9 @@ class Languages():
         self.pink = 'Розовый'
         self.green = 'Зелёный'
         self.chlan = 'ВЫБРАН РУССКИЙ ЯЗЫК'
-        self.chcol = 'ВЫБРАННЫЙ ЦВЕТ'
+        self.chcol = 'ВЫБРАННЫЙ ЦВЕТ:'
+        self.COLF = 'Белый'
+        self.COLP = 'Красный'
         self.lang = 'rus'
         if self.regim_of_sound == 1:
             self.sound = 'Звук включён'
@@ -65,7 +67,9 @@ class Languages():
         self.pink = 'Pink'
         self.green = 'Green'
         self.chlan = 'SELECTED ENGLISH LANGUAGE'
-        self.chcol = 'CHOOSEN COLOUR'
+        self.chcol = 'SELECTED COLOUR:'
+        self.COLF = 'White'
+        self.COLP = 'RED'
         self.lang = 'eng'
         if self.regim_of_sound == 1:
             self.sound = 'Sound on'
