@@ -1,7 +1,6 @@
 
-
-import numpy as np
 import pygame as pg
+import sys
 from Game_languages import Languages
 
 
@@ -86,6 +85,7 @@ class Menu():
     # self.clock.tick(7) нужно чтобы создать задержку, чтобы нажатие на кнопку в одном разделе меню, не прожималось нечайно в другом при долгом нажатии
     def main_menu(self):
         # Отрисовка главного окна меню
+        self.button.regim = 0
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
@@ -98,7 +98,10 @@ class Menu():
             self.button.draw_and_action(self.X / 8, (self.Y / 4 + 160), L.nastr, 4) # Кнопка настроек
             self.button.draw_and_action(self.X / 8, (self.Y / 4 + 210), L.exit, 5) # Кнопка выхода
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
-
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
+                    sys.exit()
             if self.button.regim == 1:
                 self.menu = 1
                 break
@@ -112,9 +115,9 @@ class Menu():
                 self.clock.tick(7)
                 self.Settings()
             if self.button.regim == 5:
-                exit()
-
-
+                pg.quit()
+                sys.exit()
+        return 'life'
 
     def Settings(self):
         # Отрисовка меню настроек
@@ -248,3 +251,6 @@ class Menu():
             elif self.button.regim == 19:
                 self.clock.tick(7)
                 break
+
+if __name__ == "__main__":
+    print("This module is not for direct call!")

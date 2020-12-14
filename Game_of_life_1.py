@@ -1,16 +1,17 @@
 '''
+
 Игра Жизнь
 
 Правая кнопка мыши - добавить клетку;
 Левая кнопка мыши - перемещение изображения;
 Колесико мыши - изменить масштаб;
-Пробел - пауза.
+Пробел - пауза;
+Escape - выход в меню.
 
 '''
 
 import numpy as np
 import pygame as pg
-#import time as t
 from pygame.draw import polygon
 
 from game_functions import Game_functions
@@ -25,8 +26,7 @@ def draw(Rect, color, space):
 def count_period(t, fps):
     return round(fps / t)
 
-def main():
-    X, Y = 1000, 550
+def life_loop(X, Y, game, M, screen):
     start_FPS = 60
     max_FPS = 250
     Trun = 60
@@ -40,33 +40,16 @@ def main():
     x_paint = 0
     y_paint = 0
     play1, play2 = 0, 1
-
-    game = Game_functions(X, Y)
+    finished = False
+    window = 'exit'
+    counter = 0
     
-    pg.init()
-    screen = pg.display.set_mode((X, Y))
-    clock = pg.time.Clock()
-    pg.display.set_caption('Conways_game_of_life')
-    pg.mixer.music.load('sound in menu.ogg')
-    pg.mixer.music.set_volume(0.35)
-    pg.mixer.music.play(-1)
-    # устанавливает инконку приложения (иконку надо закинуть в одну папку с содержимым игры, название иконки iconofgame.png )
-    # icon = pg.image.load('iconofgame.png')
-    # pg.display.set_icon(icon)
-
+    game.setup(M.menu)
+    
     pg.display.update()
     clock = pg.time.Clock()
     FPS = start_FPS
-    finished = False
-    M = Menu(X, Y, screen)
-    M.main_menu()
 
-    game.setup(M.menu)
-    
-    counter = 0
-    #t2, t3 = 0, 0
-    #measure1 = 0
-    #measure2 = 0
     while not finished:
         counter += 1
         period_run = count_period(Trun, FPS)
@@ -86,7 +69,7 @@ def main():
                     paint = 1
                 if event.button == 5:
                     scroll_down = 1
-        
+           
             elif event.type == pg.MOUSEBUTTONUP:
                 if event.button == 3:
                     track_mouse = 0
@@ -100,7 +83,10 @@ def main():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     play1 = not play1
-        
+                elif event.key == pg.K_ESCAPE:
+                    window = 'menu'
+                    finished = True
+           
         if scroll_down:
             x, y = pg.mouse.get_pos()
             game.change_index_bias(x, y)
@@ -120,29 +106,43 @@ def main():
             game.x_screen_bias += x_cur - x_start
             game.y_screen_bias += y_cur - y_start
             x_start, y_start = x_cur, y_cur
+        
         if paint and (not play1 or not play2):
             game.adjust_field()
             x_paint , y_paint = pg.mouse.get_pos()
             game.add_cell(x_paint, y_paint)
             
-        if counter % period_run == 0:  
-            #time1 = t.time()
-            game.run(play1 and play2)
-            #time2 = t.time()
-            #t2 += 1
-            #measure1 += time2 - time1
-            #print('Поколение:', game.generation)
+        if counter % period_run == 0 and play1 and play2:
+            game.run()
         if counter % period_show == 0:
-            #time3 = t.time()
             draw(game.rect_coordinetes(), M.col, screen)
             pg.display.update()
             screen.fill(M.col_fon_game)
-            #time4 = t.time()
-            #t3 += 1
-            #measure2 += time4 - time3
+    return window
+
+def main():
+    X, Y = 1000, 550
+    window = 'menu'
+    Play = True
+    
+    pg.init()
+    screen = pg.display.set_mode((X, Y))
+    pg.display.set_caption('Conways_game_of_life')
+    pg.mixer.music.load('sound in menu.ogg')
+    pg.mixer.music.set_volume(0.35)
+    pg.mixer.music.play(-1)
+    
+    M = Menu(X, Y, screen)
+    game = Game_functions(X, Y)
+
+    while Play:
+        if window == 'menu':
+            window = M.main_menu()
+        elif window == 'life':
+            window = life_loop(X, Y, game, M, screen)
+        else:
+            Play = False
     pg.quit()
-    #print('Жизнь', round(measure1/t2, 4))
-    #print('Pygame', round(measure2/t3, 4))
 
 if __name__ == '__main__':
     main()

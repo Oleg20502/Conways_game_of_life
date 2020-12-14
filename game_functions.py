@@ -18,7 +18,9 @@ class Game_functions():
         self.x_screen_bias = 0
         self.y_screen_bias = 0
         
-        self.generation = 0
+        self.generation = 1
+        self.field_width = 21
+        self.field_height = 21
         
     def broaden_field(self, border = 1):
         #t1 = t.time()
@@ -36,6 +38,7 @@ class Game_functions():
     
     def shrink_field(self):
         chunk = 20
+        chunk = np.where(self.field_width > 2*chunk and self.field_height > 2*chunk, chunk, 0)
         a, b = np.all(self.cell_field[:chunk+1, :] == 0), np.all(self.cell_field[-chunk-1:, :] == 0)
         c, d = np.all(self.cell_field[:, :chunk+1] == 0), np.all(self.cell_field[:, -chunk-1:] == 0)
         x_start, y_start = chunk * c, chunk * a
@@ -79,18 +82,17 @@ class Game_functions():
             self.cell_field[delta_y//2:-delta_y//2, delta_x//2:-delta_x//2] = self.cells
             
         elif regime == 3:                # Пустое поле
-            self.field_height = 100
-            self.field_width = 200
+            self.field_height = 105
+            self.field_width = 205
             self.cell_field = np.zeros((self.field_height, self.field_width))
         
         self.set_scale()
     
-    def run(self, run):
-        if run:
-            self.generation += 1
-            self.broaden_field()
-            self.cell_field = life(self.cell_field)
-            self.shrink_field()
+    def run(self):
+        self.generation += 1
+        self.broaden_field()
+        self.cell_field = life(self.cell_field)
+        self.shrink_field()
 
     def load(self):
         Path = 'Patterns/2c5-spaceship-gun-p416.rle'
