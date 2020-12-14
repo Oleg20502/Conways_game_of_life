@@ -1,5 +1,6 @@
-
+import easygui
 import numpy as np
+import tkinter as tk
 from Format_transform import load_and_transform
 from Life_algorithms import life
 
@@ -21,6 +22,8 @@ class Game_functions():
         self.generation = 1
         self.field_width = 21
         self.field_height = 21
+        self.x_start = None
+        self.y_start = None
         
     def broaden_field(self, border = 1):
         #t1 = t.time()
@@ -67,6 +70,11 @@ class Game_functions():
         self.cell_field[1:-1,1:-1] = np.random.randint(0, 2, (self.field_height-2, self.field_width-2))
     
     def setup(self, regime):
+        self.x_index_bias = 0
+        self.y_index_bias = 0
+        self.x_screen_bias = 0
+        self.y_screen_bias = 0
+        
         if regime == 1:                 # Случайная жизнь
             self.field_height = 100
             self.field_width = 200
@@ -95,7 +103,12 @@ class Game_functions():
         self.shrink_field()
 
     def load(self):
-        Path = 'Patterns/2c5-spaceship-gun-p416.rle'
+        #Path = 'Patterns/diagonal.rle'
+        #Path = 'Patterns/2c5-spaceship-gun-p416.rle'
+        #root = tk.Tk()
+        #root.withdraw()
+        #Path = tk.filedialog.askopenfilename()
+        Path  = easygui.fileopenbox()
         self.cells = load_and_transform(Path)
     
     def set_scale(self):
@@ -138,7 +151,6 @@ class Game_functions():
         j, i = self.get_mouse_index_coord(x, y)
         if self.field_height > i >= 0 and self.field_width > j >= 0:
             self.cell_field[i, j] = 1
-
 
 if __name__ == "__main__":
     print("This module is not for direct call!")

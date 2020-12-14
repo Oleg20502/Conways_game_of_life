@@ -27,10 +27,12 @@ def count_period(t, fps):
     return round(fps / t)
 
 def life_loop(X, Y, game, M, screen):
+    
     start_FPS = 60
     max_FPS = 250
     Trun = 60
     Tshow = 20
+    
     x_start, y_start = 0, 0
     x_cur, y_cur = 0, 0
     track_mouse = 0
