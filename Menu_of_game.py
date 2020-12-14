@@ -75,7 +75,7 @@ class Menu():
         self.fon = pg.image.load('fonn.jpeg') # Загрузка фона
         self.col = RED # Цвет писелей по умолчанию
         self.col_fon_game = WHITE # Цвет фона по умолчанию
-        self.colors = {1: RED, 2: BLUE, 3: GREEN, 4: YELLOW, 5: PINK} # Цвета, которые присваиваются фону или пикселям
+        self.colors = {1: RED, 2: BLUE, 3: GREEN, 4: YELLOW, 5: WHITE} # Цвета, которые присваиваются фону или пикселям
         # Названия цветов на русском и английском для отображения их в состоянии
         self.COLNAMESRUS = {1: 'Красный', 2: 'Синий', 3: 'Зелёный', 4: 'Жёлтый', 5: 'Белый'}
         self.COLNAMESENG = {1: 'RED', 2: 'BLUE', 3: 'GREEN', 4: 'YELLOW', 5: 'WHITE'}
