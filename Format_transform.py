@@ -24,7 +24,17 @@ def sym_change(a):
         change = 0
     elif a == 'o':
         change = 1
+    elif a == 0:
+        change = 'b'
+    elif a == 1:
+        change = 'o'
     return change
+
+def add_num(a):
+    if a > 1:
+        return str(a)
+    else:
+        return ''
 
 def load_and_transform(path):  
     with open(path, 'r') as f:
@@ -69,5 +79,31 @@ def load_and_transform(path):
     data_np[mask] = np.concatenate(data_list)
     return data_np
 
-
-                            
+def rle_encoder(field):
+    data_str = ''
+    step = 70
+    line_len = np.size(field[0])
+    count_1 = 0
+    t = 0
+    for line in field:
+        if t != 0:
+            if np.all(line == 0):
+                count_1 += 1
+                continue
+            data_str = data_str + add_num(count_1) + '$'
+            count_1 = 1
+        n1 = line[0]
+        num = 1
+        for i in range(1, line_len):
+            if t > 5 and (len(data_str) % step > step - 5 or len(data_str) % step < 5):
+                data_str = data_str + '\n'
+            if line[i] == n1:
+                num += 1
+            elif line[i] != n1:
+                data_str = data_str + add_num(num) + sym_change(n1)
+                num = 1
+                n1 = line[i]
+            if i == line_len - 1:
+                data_str = data_str + add_num(num) + sym_change(n1)
+        t += 1
+    return data_str

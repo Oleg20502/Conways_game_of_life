@@ -1,11 +1,12 @@
 import easygui
 import numpy as np
 import tkinter as tk
-from Format_transform import load_and_transform
+from Format_transform import load_and_transform, rle_encoder
 from Life_algorithms import life
 
 
 class Game_functions():
+    n = 0
     def __init__(self, screen_width, screen_height):
         self.screen_x = screen_width
         self.screen_y = screen_height
@@ -110,7 +111,14 @@ class Game_functions():
         #Path = tk.filedialog.askopenfilename()
         Path  = easygui.fileopenbox()
         self.cells = load_and_transform(Path)
-    
+        
+    def download(self):
+        Path = 'C:/Users/User/Downloads/'
+        data = rle_encoder(self.cell_field)
+        with open(Path + 'cell_field' + str(Game_functions.n) + '.rle', 'w') as f:
+            f.write(data)
+        Game_functions.n += 1
+        
     def set_scale(self):
         self.scale = np.round(np.min([self.screen_x / self.field_width,
                              self.screen_y / self.field_height]), 2)

@@ -88,6 +88,8 @@ def life_loop(X, Y, game, M, screen):
                 elif event.key == pg.K_ESCAPE:
                     window = 'menu'
                     finished = True
+                elif event.key == pg.K_s:
+                    game.download()
            
         if scroll_down:
             x, y = pg.mouse.get_pos()
