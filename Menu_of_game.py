@@ -15,10 +15,10 @@ WHITE = (255, 255, 255)
 RED = (225, 0, 50)
 BLACK = (0, 0, 0)
 lightBLACK = (3, 3, 3)
-lightGreen = (0, 255, 0)
+lightGREEN = (0, 255, 0)
 BLUE = (0, 0, 255, 20)
 GRAY = (125, 125, 125)
-lightBlue = (64, 128, 255)
+lightBLUE = (64, 128, 255)
 GREEN = (0, 200, 64, 20)
 YELLOW = (225, 225, 0, 2)
 PINK = (230, 50, 230, 0)
@@ -124,8 +124,8 @@ class Menu():
         self.button = Buttons(850, 50, self.screen)
         self.button_no_action = Buttons(150, 150, self.screen)
         self.fon = pg.image.load('fonn.jpeg') # Загрузка фона
-        self.col = RED # Цвет писелей по умолчанию
-        self.col_fon_game = WHITE # Цвет фона по умолчанию
+        self.col = lightGREEN # Цвет писелей по умолчанию
+        self.col_fon_game = BLACK # Цвет фона по умолчанию
         self.colors = {1: RED, 2: BLUE, 3: GREEN, 4: YELLOW, 5: WHITE} # Цвета, которые присваиваются фону или пикселям
         # Названия цветов на русском и английском для отображения их в состоянии
         self.COLNAMESRUS = {1: 'Красный', 2: 'Синий', 3: 'Зелёный', 4: 'Жёлтый', 5: 'Белый'}
@@ -139,6 +139,7 @@ class Menu():
 
         """
 
+        window = 'w'
         self.button.regim = 0
         while True:
             self.clock.tick(self.FPS)
@@ -154,24 +155,28 @@ class Menu():
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    pg.quit()
-                    sys.exit()
+                    window = 'exit'
+            if window == 'exit':
+                break
             if self.button.regim == 1:
                 self.menu = 1
+                window = 'life'
                 break
             if self.button.regim == 2:
                 self.menu = 2
+                window = 'life'
                 break
             if self.button.regim == 3:
                 self.menu = 3
+                window = 'life'
                 break
             if self.button.regim == 4:
                 self.clock.tick(7)
                 self.Settings()
             if self.button.regim == 5:
-                pg.quit()
-                sys.exit()
-        return 'life'
+                window = 'exit'
+                break
+        return window
 
 
     def Settings(self):
@@ -180,6 +185,7 @@ class Menu():
 
         """
 
+        self.button.regim = 0
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
@@ -216,6 +222,7 @@ class Menu():
 
         """
 
+        self.button.regim = 0
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
@@ -242,6 +249,7 @@ class Menu():
 
         """
 
+        self.button.regim = 0
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
@@ -272,6 +280,7 @@ class Menu():
 
         """
 
+        self.button.regim = 0
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
@@ -303,6 +312,7 @@ class Menu():
 
         """
 
+        self.button.regim = 0
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()

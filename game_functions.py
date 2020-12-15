@@ -1,5 +1,6 @@
 import easygui
 import numpy as np
+import os
 import tkinter as tk
 from Format_transform import load_and_transform, rle_encoder
 from Life_algorithms import life
@@ -14,6 +15,7 @@ class Game_functions():
         self.scale = 0
         self.cell_field = None
         self.cells = None
+        self.live = 1
         
         self.x_index_bias = 0
         self.y_index_bias = 0
@@ -71,6 +73,7 @@ class Game_functions():
         self.cell_field[1:-1,1:-1] = np.random.randint(0, 2, (self.field_height-2, self.field_width-2))
     
     def setup(self, regime):
+        self.live = 0
         self.x_index_bias = 0
         self.y_index_bias = 0
         self.x_screen_bias = 0
@@ -80,17 +83,21 @@ class Game_functions():
             self.field_height = 100
             self.field_width = 200
             self.create_random_life()
+            self.live = 1
             
         elif regime == 2:               # Загрузка расположения клеток из файла
+            
             self.load()
-            delta_x = 10
-            delta_y = 10
-            m, n = self.cells.shape
-            self.field_height, self.field_width = m + delta_y, n + delta_x
-            self.cell_field = np.zeros((self.field_height, self.field_width))
-            self.cell_field[delta_y//2:-delta_y//2, delta_x//2:-delta_x//2] = self.cells
+            if self.live == 1:
+                delta_x = 10
+                delta_y = 10
+                m, n = self.cells.shape
+                self.field_height, self.field_width = m + delta_y, n + delta_x
+                self.cell_field = np.zeros((self.field_height, self.field_width))
+                self.cell_field[delta_y//2:-delta_y//2, delta_x//2:-delta_x//2] = self.cells                
             
         elif regime == 3:                # Пустое поле
+            self.live = 1
             self.field_height = 105
             self.field_width = 205
             self.cell_field = np.zeros((self.field_height, self.field_width))
@@ -110,7 +117,13 @@ class Game_functions():
         #root.withdraw()
         #Path = tk.filedialog.askopenfilename()
         Path  = easygui.fileopenbox()
-        self.cells = load_and_transform(Path)
+        print(Path)
+        #check = os.path.isfile(Path) and os.path.splitext(Path)[1] == '.rle'
+        #print(os.path.splitext(Path)[1] == '.rle')
+        if not Path == None:
+            if os.path.isfile(Path) and os.path.splitext(Path)[1] == '.rle':
+                self.cells = load_and_transform(Path)
+                self.live = 1
         
     def download(self):
         Path = 'C:/Users/User/Downloads/'

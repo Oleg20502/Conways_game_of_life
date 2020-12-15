@@ -47,6 +47,8 @@ def life_loop(X, Y, game, M, screen):
     counter = 0
     
     game.setup(M.menu)
+    if game.live == 0:
+        return 'menu'
     
     pg.display.update()
     clock = pg.time.Clock()
@@ -125,15 +127,15 @@ def life_loop(X, Y, game, M, screen):
     return window
 
 def main():
-    X, Y = 1000, 550
+    X, Y = 1300, 700
     window = 'menu'
     Play = True
     
     pg.init()
     screen = pg.display.set_mode((X, Y))
-    pg.display.set_caption('Conways_game_of_life')
+    pg.display.set_caption("Conway's Game Of Life")
     pg.mixer.music.load('sound in menu.ogg')
-    pg.mixer.music.set_volume(0.35)
+    pg.mixer.music.set_volume(0.20)
     pg.mixer.music.play(-1)
     
     M = Menu(X, Y, screen)
