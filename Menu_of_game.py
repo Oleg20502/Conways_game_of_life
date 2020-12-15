@@ -1,3 +1,10 @@
+'''
+
+Модуль Menu_of_game
+
+Отвечает за отрисовку меню и выполнение действий кнопок меню
+
+'''
 
 import pygame as pg
 import sys
@@ -22,8 +29,20 @@ L = Languages(1)
 L.Russian()
 # Включаем русский язык по умолчанию
 
+
 def print_text(txt, x, y, screen, font_colour=(255, 255, 255), font_type='text.ttf', font_size=35):
-    # Рисуем текст чёрного цвета, размера 35, с координатами x, y
+    """
+    Рисуем текст чёрного цвета, размера 35, с координатами x, y
+     txt: текст
+     x: координата левого верхнего конца по x
+     y: оордината левого верхнего конца по y
+     screen: экран
+     font_colour: цвет текста
+     font_type: тип шрифта
+     font_size: размер текста
+
+    """
+
     font_type = pg.font.Font(font_type, font_size)
     text = font_type.render(txt, True, font_colour)
     screen.blit(text, (x, y))
@@ -31,8 +50,15 @@ def print_text(txt, x, y, screen, font_colour=(255, 255, 255), font_type='text.t
 
 
 class Buttons():
-    # Класс кнопок. На вход принимает высоту - width и ширину - height кнопки, а также экран, на котором будут нарисованны кнопки - screen.
-    # Содержит методы создания кнопок 2-х типов: draw_and_action, кноака с активным действием и no_action_button - кнопка без закреплённого действия.
+    """
+    Класс Buttons - отвечает за рисование кнопок
+
+    Атрибуты. На вход принимает высоту - width и ширину - height кнопки, а также экран, на котором будут нарисованны кнопки - screen.
+
+    Методы.
+    Содержит методы создания кнопок 2-х типов: draw_and_action, кноака с активным действием и no_action_button - кнопка без закреплённого действия.
+
+    """
 
     def __init__(self, width, height, screen):
         self.width = width
@@ -42,7 +68,11 @@ class Buttons():
 
 
     def draw_and_action(self, x, y, text, regim):
-        # Кнопка с активным действием, на вход координаты левого верхнего конца - x и y, надпись - text и regim - индикатор действия.
+        """
+        Кнопка с активным действием, на вход координаты левого верхнего конца - x и y, надпись - text и regim - индикатор действия.
+
+        """
+
         mouse = pg.mouse.get_pos()
         click = pg.mouse.get_pressed()
         if x < mouse[0] < x + self.width and y < mouse[1] < y + self.height:
@@ -54,13 +84,34 @@ class Buttons():
 
 
     def no_action_button(self, x, y, text):
-        # Кнопка без активного действия. на вход принемает только положение левого верхнего конца - x, y и текст - text
+        """
+        Кнопка без активного действия. на вход принемает только положение левого верхнего конца - x, y и текст - text
+
+        """
         print_text(text, x + 8, y + 8, self.screen)
 
 
 
 class Menu():
     # Класс меню. Класс отвечающий за отрисовку и работу меню. на вход размеры окна дисплея - X и Y, а также сам дисплей.
+    '''
+
+        Класс Menu отвечает за отрисовку и работу меню
+
+        Атрибуты:
+        X - ширина экрана
+        Y - высота экрана
+        screen - экран
+
+        Методы:
+        main_menu - Отрисовка главного окна меню и создание активных кнопок
+        Settings - Отрисовка меню настроек и создание активных кнопок
+        Language - Отрисовка меню выбора языка и создание активных кнопок
+        Volume - Отрисовка меню настройки громкости и создание активных кнопок
+        Colour_of_fon - Отрисовка меню выбора цвета фона и создание активных кнопок
+        Colour_of_pixels - Отрисовка меню выбора цвета пикселей и создание активных кнопок
+
+    '''
 
 
     def __init__(self, X, Y, screen):
@@ -81,10 +132,13 @@ class Menu():
         self.COLNAMESENG = {1: 'RED', 2: 'BLUE', 3: 'GREEN', 4: 'YELLOW', 5: 'WHITE'}
 
 
-
     # self.clock.tick(7) нужно чтобы создать задержку, чтобы нажатие на кнопку в одном разделе меню, не прожималось нечайно в другом при долгом нажатии
     def main_menu(self):
-        # Отрисовка главного окна меню
+        """
+        Отрисовка главного окна меню
+
+        """
+
         self.button.regim = 0
         while True:
             self.clock.tick(self.FPS)
@@ -119,8 +173,13 @@ class Menu():
                 sys.exit()
         return 'life'
 
+
     def Settings(self):
-        # Отрисовка меню настроек
+        """
+        Отрисовка меню настроек
+
+        """
+
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
@@ -152,7 +211,11 @@ class Menu():
 
 
     def Language(self):
-        # Отрисовка меню выбора языка
+        """
+        Отрисовка меню выбора языка
+
+        """
+
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
@@ -174,7 +237,11 @@ class Menu():
 
 
     def Volume(self):
-        # Отрисовка меню громкости
+        """
+        Отрисовка меню громкости
+
+        """
+
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
@@ -200,7 +267,11 @@ class Menu():
 
 
     def Colour_of_fon(self):
-        # Отрисовка меню выбора цвета фона
+        """
+        Отрисовка меню выбора цвета фона
+
+        """
+
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
@@ -227,7 +298,11 @@ class Menu():
 
 
     def Colour_of_pixels(self):
-        # Отрисовка меню выбора цвета пикселей
+        """
+        Отрисовка меню выбора цвета пикселей
+
+        """
+
         while True:
             self.clock.tick(self.FPS)
             pg.display.update()
