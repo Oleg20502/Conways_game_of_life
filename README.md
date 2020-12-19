@@ -7,7 +7,10 @@ It's a simple implementation of Conway's Game of life with some basic user funct
 ## How to use it
 Download  or clone repository and launch Game_of_life_1.
 
-Here is the instruction of how to handle the game:
+If needed before launch you have to install the following libraries:
+pygame, numpy, tkinter, easygui
+
+Here are the instructions of how to handle the game:
 1. Left mouse button - draw life;
 2. Right mouse button - drag field;
 3. Mouse wheel - zoom in/out;
