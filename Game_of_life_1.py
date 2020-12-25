@@ -127,7 +127,7 @@ def life_loop(X, Y, game, M, screen):
     return window
 
 def main():
-    X, Y = 1300, 700
+    X, Y = 1000, 550
     window = 'menu'
     Play = True
     

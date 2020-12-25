@@ -1,9 +1,10 @@
 import easygui
 import numpy as np
+from scipy.ndimage import convolve
 import os
 import tkinter as tk
 from Format_transform import load_and_transform, rle_encoder
-from Life_algorithms import life
+#from Life_algorithms import life
 
 
 class Game_functions():
@@ -16,6 +17,7 @@ class Game_functions():
         self.cell_field = None
         self.cells = None
         self.live = 1
+        self.k_window = np.array([2,2,2,2,1,2,2,2,2]).reshape(3,3)
         
         self.x_index_bias = 0
         self.y_index_bias = 0
@@ -29,7 +31,6 @@ class Game_functions():
         self.y_start = None
         
     def broaden_field(self, border = 1):
-        #t1 = t.time()
         # Расширяеет поле, т.е. массив клеток, если они подобрались близко к границам
         a, b = np.int(np.any(self.cell_field[border, :])), np.int(np.any(self.cell_field[-1-border, :]))
         c, d = np.int(np.any(self.cell_field[:, border])), np.int(np.any(self.cell_field[:, -1-border]))
@@ -107,8 +108,13 @@ class Game_functions():
     def run(self):
         self.generation += 1
         self.broaden_field()
-        self.cell_field = life(self.cell_field)
+        #self.cell_field = life(self.cell_field)
+        self.life()
         self.shrink_field()
+        
+    def life(self):
+        result = convolve(self.cell_field, self.k_window, mode="wrap")
+        self.cell_field = (result>4) & (result<8)
 
     def load(self):
         #Path = 'Patterns/diagonal.rle'
@@ -117,7 +123,6 @@ class Game_functions():
         #root.withdraw()
         #Path = tk.filedialog.askopenfilename()
         Path  = easygui.fileopenbox()
-        print(Path)
         #check = os.path.isfile(Path) and os.path.splitext(Path)[1] == '.rle'
         #print(os.path.splitext(Path)[1] == '.rle')
         if not Path == None:
