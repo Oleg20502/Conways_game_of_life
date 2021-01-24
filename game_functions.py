@@ -3,6 +3,7 @@ import numpy as np
 from scipy.ndimage import convolve
 import os
 import tkinter as tk
+from pygame.draw import polygon, line
 from Format_transform import load_and_transform, rle_encoder
 #from Life_algorithms import life
 
@@ -177,6 +178,36 @@ class Game_functions():
         j, i = self.get_mouse_index_coord(x, y)
         if self.field_height > i >= 0 and self.field_width > j >= 0:
             self.cell_field[i, j] = 1
+            
+    def draw_life(self, color, space):
+        # Создание координат для каждой вершины кадждого квадратика
+        n1, m1 = self.get_mouse_index_coord(0, 0)
+        n2, m2 = self.get_mouse_index_coord(self.screen_x, self.screen_y)
+        n1, n2 = self.hanlde_bounds(n1, axis = 0), self.hanlde_bounds(n2, axis = 0)
+        m1, m2 = self.hanlde_bounds(m1, axis = 1), self.hanlde_bounds(m2, axis = 1)
+        indeses = np.asarray(self.cell_field[m1:m2,n1:n2].nonzero()).T[:,::-1]
+        m, n = indeses.shape
+        rect = np.hstack((indeses, indeses[:,0].reshape((m,1))+1, 
+                                indeses[:,1].reshape((m,1)), indeses+1, 
+                                 indeses[:,0].reshape((m,1)), indeses[:,1].reshape((m,1))+1))
+        rect[:, ::2] = self.scale * (rect[:, ::2] - self.x_index_bias + n1)+ self.x_screen_bias
+        rect[:, 1::2] = self.scale * (rect[:, 1::2] - self.y_index_bias + m1) + self.y_screen_bias
+        # Рисуем квадратик,соответствующий каждой клетке
+        for r in rect:
+            polygon(space, color, [r[0:2], r[2:4], r[4:6], r[6:8]])
+            
+    def draw_grid(self, color, space):
+        x_start = self.x_screen_bias % self.scale
+        y_start = self.y_screen_bias % self.scale
+        rect_vert_lines = np.arange(x_start, self.screen_x+0.001 + self.scale, self.scale)
+        rect_hor_lines = np.arange(y_start, self.screen_y+0.001 + self.scale, self.scale)
+        width = 1
+        for cor in rect_vert_lines:
+            line(space, color, [cor, 0], [cor, self.screen_y], width)
+        for cor in rect_hor_lines:
+            line(space, color, [0, cor], [self.screen_x, cor], width)
+    
+    pass
 
 if __name__ == "__main__":
     print("This module is not for direct call!")

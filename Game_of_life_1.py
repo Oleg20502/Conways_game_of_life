@@ -18,11 +18,6 @@ from game_functions import Game_functions
 from Menu_of_game import Menu
 
 
-def draw(Rect, color, space):
-    # Рисуем квадратик,соответствующий каждой клетке
-    for r in Rect:
-        polygon(space, color, [r[0:2], r[2:4], r[4:6], r[6:8]])
-
 def count_period(t, fps):
     return round(fps / t)
 
@@ -121,7 +116,9 @@ def life_loop(X, Y, game, M, screen):
         if counter % period_run == 0 and play1 and play2:
             game.run()
         if counter % period_show == 0:
-            draw(game.rect_coordinetes(), M.col, screen)
+            game.draw_life(M.col, screen)
+            if game.scale > 4:
+                game.draw_grid(M.col, screen)
             pg.display.update()
             screen.fill(M.col_fon_game)
     return window
