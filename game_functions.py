@@ -4,8 +4,8 @@ from scipy.ndimage import convolve
 import os
 import tkinter as tk
 from pygame.draw import polygon, line
+
 from Format_transform import load_and_transform, rle_encoder
-#from Life_algorithms import life
 
 
 class Game_functions():
@@ -18,7 +18,7 @@ class Game_functions():
         self.cell_field = None
         self.cells = None
         self.live = 1
-        self.k_window = np.array([2,2,2,2,1,2,2,2,2]).reshape(3,3)
+        self.window = np.array([2,2,2,2,1,2,2,2,2]).reshape(3,3)
         
         self.x_index_bias = 0
         self.y_index_bias = 0
@@ -82,8 +82,8 @@ class Game_functions():
         self.y_screen_bias = 0
         
         if regime == 1:                 # Случайная жизнь
-            self.field_height = 100
-            self.field_width = 200
+            self.field_height = 70
+            self.field_width = 100
             self.create_random_life()
             self.live = 1
             
@@ -114,8 +114,8 @@ class Game_functions():
         self.shrink_field()
         
     def life(self):
-        result = convolve(self.cell_field, self.k_window, mode="wrap")
-        self.cell_field = (result>4) & (result<8)
+        result = convolve(self.cell_field, self.window, mode="wrap")
+        self.cell_field = np.logical_and(result > 4, result < 8)
 
     def load(self):
         #Path = 'Patterns/diagonal.rle'

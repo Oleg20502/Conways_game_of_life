@@ -1,4 +1,4 @@
-'''
+"""
 
 Игра Жизнь
 
@@ -8,11 +8,10 @@
 Пробел - пауза;
 Escape - выход в меню.
 
-'''
+"""
 
 import numpy as np
 import pygame as pg
-from pygame.draw import polygon
 
 from game_functions import Game_functions
 from Menu_of_game import Menu
@@ -117,7 +116,7 @@ def life_loop(X, Y, game, M, screen):
             game.run()
         if counter % period_show == 0:
             game.draw_life(M.col, screen)
-            if game.scale > 4:
+            if game.scale > 3.5:
                 game.draw_grid(M.col, screen)
             pg.display.update()
             screen.fill(M.col_fon_game)
@@ -132,7 +131,7 @@ def main():
     screen = pg.display.set_mode((X, Y))
     pg.display.set_caption("Conway's Game Of Life")
     pg.mixer.music.load('sound in menu.ogg')
-    pg.mixer.music.set_volume(0.20)
+    pg.mixer.music.set_volume(0.01)
     pg.mixer.music.play(-1)
     
     M = Menu(X, Y, screen)

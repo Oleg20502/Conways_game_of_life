@@ -7,7 +7,7 @@
 '''
 
 import pygame as pg
-import sys
+
 from Game_languages import Languages
 
 
@@ -48,7 +48,6 @@ def print_text(txt, x, y, screen, font_colour=(255, 255, 255), font_type='text.t
     screen.blit(text, (x, y))
 
 
-
 class Buttons():
     """
     Класс Buttons - отвечает за рисование кнопок
@@ -66,7 +65,6 @@ class Buttons():
         self.regim = None #Глобальное значение индикатора действия кнопки
         self.screen = screen
 
-
     def draw_and_action(self, x, y, text, regim):
         """
         Кнопка с активным действием, на вход координаты левого верхнего конца - x и y, надпись - text и regim - индикатор действия.
@@ -82,14 +80,12 @@ class Buttons():
                 self.regim = regim
         print_text(text, x + 8, y + 8, self.screen)
 
-
     def no_action_button(self, x, y, text):
         """
         Кнопка без активного действия. на вход принемает только положение левого верхнего конца - x, y и текст - text
 
         """
         print_text(text, x + 8, y + 8, self.screen)
-
 
 
 class Menu():
@@ -158,22 +154,22 @@ class Menu():
                     window = 'exit'
             if window == 'exit':
                 break
-            if self.button.regim == 1:
+            elif self.button.regim == 1:
                 self.menu = 1
                 window = 'life'
                 break
-            if self.button.regim == 2:
+            elif self.button.regim == 2:
                 self.menu = 2
                 window = 'life'
                 break
-            if self.button.regim == 3:
+            elif self.button.regim == 3:
                 self.menu = 3
                 window = 'life'
                 break
-            if self.button.regim == 4:
+            elif self.button.regim == 4:
                 self.clock.tick(7)
                 self.Settings()
-            if self.button.regim == 5:
+            elif self.button.regim == 5:
                 window = 'exit'
                 break
         return window
@@ -202,16 +198,16 @@ class Menu():
                 # Иникатор действия 6 - происходит выполнение дейстрия кнопки L.naz
                 self.clock.tick(7)
                 break
-            if self.button.regim == 7:
+            elif self.button.regim == 7:
                 self.clock.tick(7)
                 self.Language()
-            if self.button.regim == 8:
+            elif self.button.regim == 8:
                 self.clock.tick(7)
                 self.Volume()
-            if self.button.regim == 9:
+            elif self.button.regim == 9:
                 self.clock.tick(7)
                 self.Colour_of_fon()
-            if self.button.regim == 10:
+            elif self.button.regim == 10:
                 self.clock.tick(7)
                 self.Colour_of_pixels()
 
@@ -236,9 +232,9 @@ class Menu():
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
             if self.button.regim == 11:
                 L.Russian()
-            if self.button.regim == 12:
+            elif self.button.regim == 12:
                 L.English()
-            if self.button.regim == 13:
+            elif self.button.regim == 13:
                 self.clock.tick(7)
                 break
 
@@ -265,11 +261,11 @@ class Menu():
                 L.Sound(1)
                 L.regim_of_sound = 1
                 pg.mixer.music.play(-1)
-            if self.button.regim == 15:
+            elif self.button.regim == 15:
                 L.Sound(0)
                 L.regim_of_sound = 0
                 pg.mixer.music.pause()
-            if self.button.regim == 16:
+            elif self.button.regim == 16:
                 self.clock.tick(7)
                 break
 
