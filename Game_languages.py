@@ -1,17 +1,13 @@
-'''
-
+"""
 Модуль Game_languages
 
 Устанавливает и изменяет язык меню
 
-'''
-
-
+"""
 
 
 class Languages():
-    '''
-
+    """
     Класс Languages используется для хранения и установки языквых пакетов.
 
     Атрибуты:
@@ -23,21 +19,17 @@ class Languages():
     Sound - Функция меняющая состояние индикатора звука, на вход подаётся i - переменная состояния звука.
     i = 1 - звук включился, i = 0 - выключился
 
-    '''
-
-
+    """
     def __init__(self, regim_of_sound):
         self.regim_of_sound = regim_of_sound
         # Переменная нужна, чтобы можно было полноценно реализовать смену языка, она означает, что по умодлчанию звук включён,
         # т. е. кнопка показывающая состояние звука такая: "Звук включен"
-
 
     def Russian(self):
         """
         Присваевает переменным, отвечающим за подписи кнопок значения на русском языке
 
         """
-
         self.zapp = 'Запуск произвольного поля'
         self.zapz = 'Запуск загруженного из файла поля'
         self.zapn = 'Рисование своего поля'
@@ -75,7 +67,6 @@ class Languages():
         Присваевает переменным, отвечающим за подписи кнопок значения на английском языке
 
         """
-
         self.zapp = 'Launch custom field'
         self.zapz = 'Launch an arbitrary field loaded from a file'
         self.zapn = 'Draw a custom field'
@@ -107,13 +98,11 @@ class Languages():
         elif self.regim_of_sound == 0:
             self.sound = 'Sound off'
 
-
     def Sound(self, i):
         """
         Функция меняющая состояние индикатора звука, на вход подаётся i - переменная состояния звука. i = 1 - звук включился, i = 0 - выключился
 
         """
-
         if i == 1 and self.lang == 'rus':
             self.sound = 'Звук включен'
             self.regim_of_sounf = 1
@@ -128,6 +117,8 @@ class Languages():
             self.regim_of_sounf = 0
 
 
+if __name__ == "__main__":
+    print("This module is not for direct call!")
 
 
 
