@@ -20,101 +20,93 @@ class Languages():
     i = 1 - звук включился, i = 0 - выключился
 
     """
-    def __init__(self, regim_of_sound):
-        self.regim_of_sound = regim_of_sound
+    def __init__(self, lang = 0, sound_regime = 0, grid_regime = 0):
+        self.lang = lang
+        self.sound_regime = sound_regime
+        self.grid_regime = grid_regime
         # Переменная нужна, чтобы можно было полноценно реализовать смену языка, она означает, что по умодлчанию звук включён,
         # т. е. кнопка показывающая состояние звука такая: "Звук включен"
+
+        self.zapp = ['Сгенерировать случайное поле', 'Generate random cell field']
+        self.zapz = ['Загрузить паттерн из файла', 'Load pattern from file']
+        self.zapn = ['Пустое поле', 'Blank cell field']
+        self.nastr = ['Настройки', 'Settings']
+        self.exit = ['Выход', 'Exit']
+        self.naz = ['Назад', 'Back']
+        self.yz = ['Язык', 'Language']
+        self.zast = ['Выбрать цвет поля', 'Select field color']
+        self.vcp = ['Выбрать цвет клеток', 'Select cells color']
+        self.rus = ['Русский', 'Russian']
+        self.eng = ['Английский', 'English']
+        self.sound = ['Звук', 'Sound']
+        self.soundon = ['Включить звук', 'Turn sound on']
+        self.soundoff = ['Выключить звук', 'Turn sound off']
+        self.soundoninfo = ['Звук включен', 'Звук включен']
+        self.soundoffinfo = ['Звук выключен', 'Звук выключен']
+        self.grid = ['Сетка', 'Grid']
+        self.gridon = ['Показывать сетку', 'Show grid']
+        self.gridoff = ['Скрыть сетку', 'Hide grid']
+        self.gridoninfo = ['Сетка включена', 'Grid on']
+        self.gridoffinfo = ['Сетка скрыта', 'Grid off']
+        self.red = ['Красный', 'Red']
+        self.blue = ['Синий', 'Blue']
+        self.yel = ['Жёлтый', 'Yellow']
+        self.ora = ['Оранжевый', 'Orange']
+        self.wit = ['Белый', 'White']
+        self.pink = ['Розовый', 'Pink']
+        self.green = ['Зелёный', 'Green']
+        self.chlan = ['ВЫБРАН РУССКИЙ ЯЗЫК', 'SELECTED ENGLISH LANGUAGE']
+        self.chcol = ['ВЫБРАННЫЙ ЦВЕТ: ', 'SELECTED COLOUR: ']
+        self.COLF = ['Белый', 'White']
+        self.COLP = ['Красный', 'RED']
+        self.language = ['rus', 'eng']
+        self.COLNAMES = {1: ['Красный', 'RED'], 2: ['Синий', 'BLUE'], 
+                         3: ['Зелёный', 'GREEN'], 4: ['Жёлтый', 'YELLOW'], 
+                            5: ['Белый', 'WHITE']}
+        
+        
+        if self.sound_regime == 1:
+            self.soundinfo = self.soundoninfo
+        elif self.sound_regime == 0:
+            self.soundinfo = self.soundoffinfo
+        
+        if self.grid_regime == 1:
+            self.gridinfo = self.gridoninfo
+        elif self.grid_regime == 0:
+            self.gridinfo = self.gridoffinfo
+        
 
     def Russian(self):
         """
         Присваевает переменным, отвечающим за подписи кнопок значения на русском языке
 
         """
-        self.zapp = 'Запуск произвольного поля'
-        self.zapz = 'Запуск загруженного из файла поля'
-        self.zapn = 'Рисование своего поля'
-        self.nastr = 'Настройки'
-        self.exit = 'Выход'
-        self.naz = 'Назад'
-        self.yz = 'Язык'
-        self.s = 'Звук'
-        self.zast = 'Заставка'
-        self.vcp = 'Выбор цвета пикселей'
-        self.rus = 'Русский'
-        self.eng = 'Английский'
-        self.tons = 'Включить звук'
-        self.toffs = 'Выключить звук'
-        self.red = 'Красный'
-        self.blue = 'Синий'
-        self.yel = 'Жёлтый'
-        self.ora = 'Оранжевый'
-        self.wit = 'Белый'
-        self.pink = 'Розовый'
-        self.green = 'Зелёный'
-        self.chlan = 'ВЫБРАН РУССКИЙ ЯЗЫК'
-        self.chcol = 'ВЫБРАННЫЙ ЦВЕТ:'
-        self.COLF = 'Белый'
-        self.COLP = 'Красный'
-        self.lang = 'rus'
-        if self.regim_of_sound == 1:
-            self.sound = 'Звук включен'
-        elif self.regim_of_sound == 0:
-            self.sound = 'Звук выключен'
-
+        self.lang = 0
 
     def English(self):
         """
         Присваевает переменным, отвечающим за подписи кнопок значения на английском языке
 
         """
-        self.zapp = 'Launch custom field'
-        self.zapz = 'Launch an arbitrary field loaded from a file'
-        self.zapn = 'Draw a custom field'
-        self.nastr = 'Settings'
-        self.exit = 'Exit'
-        self.naz = 'Back'
-        self.yz = 'Language'
-        self.s = 'Sound'
-        self.zast = 'Screensaver'
-        self.vcp = 'Select pixel color'
-        self.rus = 'Russian'
-        self.eng = 'English'
-        self.tons = 'Turn sound on'
-        self.toffs = 'Turn sound off'
-        self.red = 'Red'
-        self.blue = 'Blue'
-        self.yel = 'Yellow'
-        self.ora = 'Orange'
-        self.wit = 'White'
-        self.pink = 'Pink'
-        self.green = 'Green'
-        self.chlan = 'SELECTED ENGLISH LANGUAGE'
-        self.chcol = 'SELECTED COLOUR:'
-        self.COLF = 'White'
-        self.COLP = 'RED'
-        self.lang = 'eng'
-        if self.regim_of_sound == 1:
-            self.sound = 'Sound on'
-        elif self.regim_of_sound == 0:
-            self.sound = 'Sound off'
-
+        self.lang = 1
+        
+    def L(self, word):
+        return word[self.lang]
+    
     def Sound(self, i):
         """
-        Функция меняющая состояние индикатора звука, на вход подаётся i - переменная состояния звука. i = 1 - звук включился, i = 0 - выключился
+        Функция меняющая состояние индикатора звука. На вход подаётся
+        i - переменная состояния звука. i = 1 - звук включился, i = 0 - выключился
 
         """
         if i == 1 and self.lang == 'rus':
             self.sound = 'Звук включен'
-            self.regim_of_sounf = 1
         elif i == 1 and self.lang == 'eng':
             self.sound = 'Sound on'
-            self.regim_of_sounf = 1
         elif i == 0 and self.lang == 'rus':
             self.sound = 'Звук выключен'
-            self.regim_of_sounf = 0
         elif i == 0 and self.lang == 'eng':
             self.sound = 'Sound off'
-            self.regim_of_sounf = 0
 
 
 if __name__ == "__main__":

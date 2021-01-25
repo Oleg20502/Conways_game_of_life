@@ -3,36 +3,63 @@ import numpy as np
 from scipy.ndimage import convolve
 import os
 import tkinter as tk
+import pygame as pg
 from pygame.draw import rect, line
 
 from Format_transform import load_and_transform, rle_encoder
 
 
+def count_period(t, fps):
+    return round(fps / t)
+
+
 class Game_functions():
+    """
+    Класс Game_functions содержит функции для визуализации игры
+    screen_width - ширина экрана
+    screen_height - высрта экрана
+    
+    scale - масштабирующий коэффициент перехода от индексовых координат к экранным
+    cell_field - 2D массив из нулей и единиц, поле с клетками 
+    
+    
+    
+    """
     n = 0
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen_width, screen_height, screen):
         self.screen_x = screen_width
         self.screen_y = screen_height
+        self.screen = screen
+        
+        self.regime = 0
+        self.cell_color = None
+        self.field_color = None
+        self.grid_color = None
+        self.FPS = 20
+        self.grid = 0
         
         self.scale = 0
         self.cell_field = None
         self.cells = None
         self.live = 1
         self.window = np.array([2,2,2,2,1,2,2,2,2]).reshape(3,3)
+        self.generation = 0
+        self.field_width = 21
+        self.field_height = 21
         
         self.x_index_bias = 0
         self.y_index_bias = 0
         self.x_screen_bias = 0
         self.y_screen_bias = 0
         
-        self.generation = 1
-        self.field_width = 21
-        self.field_height = 21
-        self.x_start = None
-        self.y_start = None
+        #self.x_start = None
+        #self.y_start = None
         
     def broaden_field(self, border = 1):
-        # Расширяеет поле, т.е. массив клеток, если они подобрались близко к границам
+        """
+        Расширяеет поле, т.е. массив клеток, если они подобрались близко к границам
+        
+        """
         a, b = np.int(np.any(self.cell_field[border, :])), np.int(np.any(self.cell_field[-1-border, :]))
         c, d = np.int(np.any(self.cell_field[:, border])), np.int(np.any(self.cell_field[:, -1-border]))
         self.field_height += a + b
@@ -45,6 +72,11 @@ class Game_functions():
         #print('Расширение поля', t.time() - t1)
     
     def shrink_field(self):
+        """
+        Сжимает поле, если по краям образуются полосы мертвых клеток,
+        шириной больше чем chunk.
+        
+        """
         chunk = 20
         chunk = np.where(self.field_width > 2*chunk and self.field_height > 2*chunk, chunk, 0)
         a, b = np.all(self.cell_field[:chunk+1, :] == 0), np.all(self.cell_field[-chunk-1:, :] == 0)
@@ -58,6 +90,10 @@ class Game_functions():
         self.y_index_bias -= y_start
         
     def adjust_field(self):
+        """
+        Подгоняет поле под размер экрана
+        
+        """
         n1, m1 = self.get_mouse_index_coord(0, 0)
         n2, m2 = self.get_mouse_index_coord(self.screen_x, self.screen_y)
         x_zero, y_zero = min(0, n1), min(0, m1)
@@ -71,23 +107,31 @@ class Game_functions():
         self.y_index_bias -= y_zero
         
     def create_random_life(self):
+        """
+        Создает поле, заполненное единицами и нулями случайным образом
+        
+        """
         self.cell_field = np.zeros((self.field_height, self.field_width))
         self.cell_field[1:-1,1:-1] = np.random.randint(0, 2, (self.field_height-2, self.field_width-2))
     
-    def setup(self, regime):
+    def setup(self):
+        """
+        Функция для подготовки работы в одном из режимов
+        
+        """
         self.live = 0
         self.x_index_bias = 0
         self.y_index_bias = 0
         self.x_screen_bias = 0
         self.y_screen_bias = 0
         
-        if regime == 1:                 # Случайная жизнь
+        if self.regime == 1:                 # Случайная жизнь
             self.field_height = 70
             self.field_width = 100
             self.create_random_life()
             self.live = 1
             
-        elif regime == 2:               # Загрузка расположения клеток из файла
+        elif self.regime == 2:               # Загрузка расположения клеток из файла
             
             self.load()
             if self.live == 1:
@@ -98,7 +142,7 @@ class Game_functions():
                 self.cell_field = np.zeros((self.field_height, self.field_width))
                 self.cell_field[delta_y//2:-delta_y//2, delta_x//2:-delta_x//2] = self.cells                
             
-        elif regime == 3:                # Пустое поле
+        elif self.regime == 3:                # Пустое поле
             self.live = 1
             self.field_height = 105
             self.field_width = 205
@@ -107,6 +151,10 @@ class Game_functions():
         self.set_scale()
     
     def run(self):
+        """
+        Осуществляет цикл смены поколений
+        
+        """
         self.generation += 1
         self.broaden_field()
         #self.cell_field = life(self.cell_field)
@@ -114,10 +162,18 @@ class Game_functions():
         self.shrink_field()
         
     def life(self):
+        """
+        Просчитывает новое поколение
+        
+        """
         result = convolve(self.cell_field, self.window, mode="wrap")
         self.cell_field = np.logical_and(result > 4, result < 8)
 
     def load(self):
+        """
+        Загружает паттерн
+        
+        """
         #Path = 'Patterns/diagonal.rle'
         #Path = 'Patterns/2c5-spaceship-gun-p416.rle'
         #root = tk.Tk()
@@ -132,6 +188,10 @@ class Game_functions():
                 self.live = 1
         
     def download(self):
+        """
+        Сохраняет состояние поля в файл в папку Загрузки
+        
+        """
         Path = 'C:/Users/User/Downloads/'
         data = rle_encoder(self.cell_field)
         with open(Path + 'cell_field' + str(Game_functions.n) + '.rle', 'w') as f:
@@ -139,10 +199,18 @@ class Game_functions():
         Game_functions.n += 1
         
     def set_scale(self):
+        """
+        Устанавливает масштаб scale
+        
+        """
         self.scale = np.round(np.min([self.screen_x / self.field_width,
                              self.screen_y / self.field_height]), 2)
         
     def hanlde_bounds(self, x, axis = 0):
+        """
+        Вспомогательная функция для контроля не выхода переменной x из границ экрана
+        
+        """
         if axis != 0 and axis != 1:
             raise TypeError ('Axis should be 0 or 1')
         upper_bound = (1 - axis) * self.field_width + axis * self.field_height
@@ -151,20 +219,38 @@ class Game_functions():
         return x
         
     def change_index_bias(self, x, y):
+        """
+        Изменяет сбвиг индексовых координат
+        
+        """
         self.x_index_bias += np.int((x - self.x_screen_bias) // self.scale)
         self.y_index_bias += np.int((y - self.y_screen_bias) // self.scale)
     
     def get_mouse_index_coord(self, x, y):
+        """
+        На вход получает координаты положения мыши на экране.
+        Возвращает кординаты мыши в индексовых координатах.
+        
+        """
         x_index = np.int((x - self.x_screen_bias) // self.scale + self.x_index_bias)
         y_index = np.int((y - self.y_screen_bias) // self.scale + self.y_index_bias)
         return x_index, y_index
         
     def add_cell(self, x, y):
+        """
+        На вход получает координаты положения мыши на экране.
+        Функция добавляет живую клетку в сооьветствующую часть экрана.
+        
+        """
         j, i = self.get_mouse_index_coord(x, y)
         if self.field_height > i >= 0 and self.field_width > j >= 0:
             self.cell_field[i, j] = 1
             
-    def draw_life(self, color, space):
+    def draw_life(self):
+        """
+        Отображает положение и состояния клеток на экране.
+        
+        """
         # Создание координат для каждой вершины кадждого квадратика
         n1, m1 = self.get_mouse_index_coord(0, 0)
         n2, m2 = self.get_mouse_index_coord(self.screen_x, self.screen_y)
@@ -177,20 +263,126 @@ class Game_functions():
         coord[:, 1] = self.scale * (indeses[:, 1] - self.y_index_bias + m1) + self.y_screen_bias
         # Рисуем квадратик,соответствующий каждой клетке
         for c in coord:
-            rect(space, color, [c[0], c[1], 1.02*self.scale, 1.02*self.scale])
+            rect(self.screen, self.cell_color, [c[0], c[1], 1.02*self.scale, 1.02*self.scale])
             
-    def draw_grid(self, color, space):
-        x_start = self.x_screen_bias % self.scale
-        y_start = self.y_screen_bias % self.scale
-        rect_vert_lines = np.arange(x_start, self.screen_x+0.001 + self.scale, self.scale)
-        rect_hor_lines = np.arange(y_start, self.screen_y+0.001 + self.scale, self.scale)
-        width = 1
-        for cor in rect_vert_lines:
-            line(space, color, [cor, 0], [cor, self.screen_y], width)
-        for cor in rect_hor_lines:
-            line(space, color, [0, cor], [self.screen_x, cor], width)
+    def draw_grid(self):
+        """
+        Рисует на экране сетку. 
+        
+        """
+        if self.grid and self.scale > 3.5:
+            self.grid_color = self.cell_color
+            x_start = self.x_screen_bias % self.scale
+            y_start = self.y_screen_bias % self.scale
+            rect_vert_lines = np.arange(x_start, self.screen_x+0.001 + self.scale, self.scale)
+            rect_hor_lines = np.arange(y_start, self.screen_y+0.001 + self.scale, self.scale)
+            width = 1
+            for cor in rect_vert_lines:
+                line(self.screen, self.grid_color, [cor, 0], [cor, self.screen_y], width)
+            for cor in rect_hor_lines:
+                line(self.screen, self.grid_color, [0, cor], [self.screen_x, cor], width)
     
-    pass
+    def life_loop(self):
+    
+        start_FPS = 60
+        max_FPS = 250
+        Trun = 60
+        Tshow = 20
+        
+        x_start, y_start = 0, 0
+        x_cur, y_cur = 0, 0
+        track_mouse = 0
+        scroll_up = 0
+        scroll_down = 0
+        paint = 0
+        x_paint = 0
+        y_paint = 0
+        play1, play2 = 0, 1
+        finished = False
+        window = 'exit'
+        counter = 0
+        
+        self.setup()
+        if self.live == 0:
+            return 'menu'
+        
+        pg.display.update()
+        clock = pg.time.Clock()
+        FPS = start_FPS
+    
+        while not finished:
+            counter += 1
+            period_run = count_period(Trun, FPS)
+            period_show = count_period(Tshow, FPS)
+            clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    finished = True
+                    
+                elif event.type == pg.MOUSEBUTTONDOWN:
+                    if event.button == 3:
+                        track_mouse = 1
+                        x_start, y_start = pg.mouse.get_pos()
+                    if event.button  == 1:
+                        play2 = 0
+                        FPS = max_FPS
+                        paint = 1
+                    if event.button == 5:
+                        scroll_down = 1
+               
+                elif event.type == pg.MOUSEBUTTONUP:
+                    if event.button == 3:
+                        track_mouse = 0
+                    if event.button == 1:
+                        play2 = 1
+                        FPS = start_FPS
+                        paint = 0
+                    if event.button == 4:
+                        scroll_up = 1
+                        
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_SPACE:
+                        play1 = not play1
+                    elif event.key == pg.K_ESCAPE:
+                        window = 'menu'
+                        finished = True
+                    elif event.key == pg.K_s:
+                        self.download()
+               
+            if scroll_down:
+                x, y = pg.mouse.get_pos()
+                self.change_index_bias(x, y)
+                self.x_screen_bias, self.y_screen_bias = x, y
+                self.scale = np.round(max(self.scale * 0.9, 0.5), 2)
+                scroll_down = 0
+                
+            if scroll_up:
+                x, y = pg.mouse.get_pos()
+                self.change_index_bias(x, y)
+                self.x_screen_bias, self.y_screen_bias = x, y
+                self.scale = np.round(min(self.scale * 1.1, 50), 2)
+                scroll_up = 0
+            
+            if track_mouse == 1:
+                x_cur, y_cur = pg.mouse.get_pos()
+                self.x_screen_bias += x_cur - x_start
+                self.y_screen_bias += y_cur - y_start
+                x_start, y_start = x_cur, y_cur
+            
+            if paint and not (play1 and play2):
+                self.adjust_field()
+                x_paint , y_paint = pg.mouse.get_pos()
+                self.add_cell(x_paint, y_paint)
+                
+            if counter % period_run == 0 and play1 and play2:
+                self.run()
+            if counter % period_show == 0:
+                self.draw_life()
+                self.draw_grid()
+                pg.display.update()
+                self.screen.fill(self.field_color)
+        return window
+
 
 if __name__ == "__main__":
     print("This module is not for direct call!")

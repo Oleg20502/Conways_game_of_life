@@ -23,10 +23,8 @@ YELLOW = (225, 225, 0, 2)
 PINK = (230, 50, 230, 0)
 ORANGE = (255, 165, 0)
 
-L = Languages(1)
-# Создаём экземпляр класса Languages, 1 означает, что по умолчанию звук включен
-L.Russian()
-# Включаем русский язык по умолчанию
+L = Languages(0, 0, 0)   # Создаём экземпляр класса Languages, 1 означает, что по умолчанию звук включен
+L.Russian()        # Включаем русский язык по умолчанию
 
 def print_text(txt, x0, y0, screen, font_color=(255, 255, 255), font_type='text.ttf', font_size=35):
     """
@@ -88,20 +86,21 @@ class Menu():
         Colour_of_pixels - Отрисовка меню выбора цвета пикселей и создание активных кнопок
 
     """
-    def __init__(self, X, Y, screen):
+    def __init__(self, X, Y, screen, game):
         self.clock = pg.time.Clock()
         self.X = X
         self.Y =Y
         self.FPS = 90
         self.screen = screen
-        self.menu = 0 # Глобальная переменная в классе, может принемать значение 0 и 1, по умолчанию 0, при нажатии на одну из кнопок, запускающих игру - 1.
+        self.game = game
+        
+        self.game.field_color = BLACK
+        self.game.cell_color = lightGREEN
+        self.game.grid = 0
+        
         self.fon = pg.image.load('fonn.jpeg') # Загрузка фона
-        self.col = lightGREEN # Цвет писелей по умолчанию
-        self.col_fon_game = BLACK # Цвет фона по умолчанию
         self.colors = {1: RED, 2: BLUE, 3: GREEN, 4: YELLOW, 5: WHITE} # Цвета, которые присваиваются фону или пикселям
-        # Названия цветов на русском и английском для отображения их в состоянии
-        self.COLNAMESRUS = {1: 'Красный', 2: 'Синий', 3: 'Зелёный', 4: 'Жёлтый', 5: 'Белый'}
-        self.COLNAMESENG = {1: 'RED', 2: 'BLUE', 3: 'GREEN', 4: 'YELLOW', 5: 'WHITE'}
+
 
     def main_menu(self):
         """
@@ -110,10 +109,10 @@ class Menu():
         """
         window = 'm'
         x_cor, y_cor = self.X / 8, self.Y / 4
-        but_size = (580, 50)
-        b1 = Button((x_cor, y_cor), but_size, 1, self.screen)               # Кнопка запуска произвольного поля
-        b2 = Button((x_cor, y_cor + 50), but_size, 2, self.screen)        # Кнопка запуска загруженного из файла
-        b3 = Button((x_cor, y_cor + 100), but_size, 3, self.screen)       # Кнопка запуска режима рисования своего поля
+        but_size = (485, 50)
+        b1 = Button((x_cor, y_cor), but_size, 3, self.screen)               # Кнопка запуска произвольного поля
+        b2 = Button((x_cor, y_cor + 50), but_size, 1, self.screen)        # Кнопка запуска загруженного из файла
+        b3 = Button((x_cor, y_cor + 100), but_size, 2, self.screen)       # Кнопка запуска режима рисования своего поля
         b4 = Button((x_cor, y_cor + 150), but_size, 4, self.screen)      # Кнопка настроек
         b5 = Button((x_cor, y_cor + 200), but_size, 5, self.screen)       # Кнопка выхода
         buttons = [b1, b2, b3, b4, b5]
@@ -124,11 +123,11 @@ class Menu():
             pg.event.get()
             self.screen.blit(self.fon, (0, 0))
             x, y = pg.mouse.get_pos()
-            b1.draw(x, y, L.zapp)
-            b2.draw(x, y, L.zapz)
-            b3.draw(x, y, L.zapn)
-            b4.draw(x, y, L.nastr)
-            b5.draw(x, y, L.exit)
+            b1.draw(x, y, L.L(L.zapn))
+            b2.draw(x, y, L.L(L.zapp))
+            b3.draw(x, y, L.L(L.zapz))
+            b4.draw(x, y, L.L(L.nastr))
+            b5.draw(x, y, L.L(L.exit))
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
             
             for event in pg.event.get():
@@ -139,7 +138,7 @@ class Menu():
                         if b.get_clicked(x, y) == 1:
                             b.clicked = 0
                             if b.regime in [1, 2, 3]:
-                                self.menu = b.regime
+                                self.game.regime = b.regime
                                 window = 'life'
                             elif b.regime == 4:
                                 window = self.Settings()
@@ -156,13 +155,14 @@ class Menu():
         """
         window = 's'
         x_cor, y_cor = self.X / 8, self.Y / 4
-        but_size = (400, 50)
+        but_size = (350, 50)
         b1 = Button((x_cor, y_cor), but_size, 1, self.screen)
         b2 = Button((x_cor, y_cor + 50), but_size, 2, self.screen)
         b3 = Button((x_cor, y_cor + 100), but_size, 3, self.screen)
         b4 = Button((x_cor, y_cor + 150), but_size, 4, self.screen)
         b5 = Button((x_cor, y_cor + 200), but_size, 5, self.screen)
-        buttons = [b1, b2, b3, b4, b5]
+        b6 = Button((x_cor, y_cor + 250), but_size, 6, self.screen)
+        buttons = [b1, b2, b3, b4, b5, b6]
         Run = True
         while Run:
             self.clock.tick(self.FPS)
@@ -170,11 +170,12 @@ class Menu():
             pg.event.get()
             self.screen.blit(self.fon, (0, 0))
             x, y = pg.mouse.get_pos()
-            b1.draw(x, y, L.naz)
-            b2.draw(x, y, L.yz)
-            b3.draw(x, y, L.s)
-            b4.draw(x, y, L.zast)
-            b5.draw(x, y, L.vcp)
+            b1.draw(x, y, L.L(L.naz))
+            b2.draw(x, y, L.L(L.yz))
+            b3.draw(x, y, L.L(L.sound))
+            b4.draw(x, y, L.L(L.grid))
+            b5.draw(x, y, L.L(L.zast))
+            b6.draw(x, y, L.L(L.vcp))
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
             
             for event in pg.event.get():
@@ -191,8 +192,10 @@ class Menu():
                             elif b.regime == 3:
                                 window = self.Volume()
                             elif b.regime == 4:
-                                window = self.Colour_of_fon()
+                                 window = self.Grid()
                             elif b.regime == 5:
+                                window = self.Colour_of_fon()
+                            elif b.regime == 6:
                                 window = self.Colour_of_pixels()
             if window in ['exit', 'menu']:
                 Run = False
@@ -218,10 +221,10 @@ class Menu():
             pg.event.get()
             self.screen.blit(self.fon, (0, 0))
             x, y = pg.mouse.get_pos()
-            b1.draw(x, y, L.naz)
-            b2.draw(x, y, L.rus)
-            b3.draw(x, y, L.eng)
-            b4.draw(None, None, L.chlan)
+            b1.draw(x, y, L.L(L.naz))
+            b2.draw(x, y, L.L(L.rus))
+            b3.draw(x, y, L.L(L.eng))
+            b4.draw(None, None, L.L(L.chlan))
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
             
             for event in pg.event.get():
@@ -234,7 +237,6 @@ class Menu():
                             if b.regime == 1:
                                 window = 'settings'
                             elif b.regime == 2:
-                                #self.clock.tick(7)
                                 L.Russian()
                             elif b.regime == 3:
                                 L.English()
@@ -262,10 +264,10 @@ class Menu():
             pg.event.get()
             self.screen.blit(self.fon, (0, 0))
             x, y = pg.mouse.get_pos()
-            b1.draw(x, y, L.naz)
-            b2.draw(x, y, L.tons)
-            b3.draw(x, y, L.toffs)
-            b4.draw(None, None, L.sound)
+            b1.draw(x, y, L.L(L.naz))
+            b2.draw(x, y, L.L(L.soundon))
+            b3.draw(x, y, L.L(L.soundoff))
+            b4.draw(None, None, L.L(L.soundinfo))
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
             
             for event in pg.event.get():
@@ -278,16 +280,65 @@ class Menu():
                             if b.regime == 1:
                                 window = 'settings'
                             elif b.regime == 2:
-                                L.Sound(1)
-                                L.regim_of_sound = 1
+                                #L.Sound(1)
+                                L.soundinfo = L.soundoninfo
+                                #L.sound_regime = 1
                                 pg.mixer.music.play(-1)
                             elif b.regime == 3:
-                                L.Sound(0)
-                                L.regim_of_sound = 0
+                                #L.Sound(0)
+                                L.soundinfo = L.soundoffinfo
+                                #L.sound_regime = 0
                                 pg.mixer.music.pause()
             if window in ['exit', 'settings']:
                 Run = False
         return window
+    
+    def Grid(self):
+        """
+        Отрисовка меню выбора сетки
+        
+        """
+        window = 'g'
+        x_cor, y_cor = self.X / 8, self.Y / 4
+        but_size = (300, 50)
+        b1 = Button((x_cor, y_cor), but_size, 1, self.screen)
+        b2 = Button((x_cor, y_cor + 50), but_size, 2, self.screen)
+        b3 = Button((x_cor, y_cor + 100), but_size, 3, self.screen)
+        b4 = Button((x_cor, self.Y - 100), but_size, 4, self.screen)
+        buttons = [b1, b2, b3]
+        Run = True
+        while Run:
+            self.clock.tick(self.FPS)
+            pg.display.update()
+            pg.event.get()
+            self.screen.blit(self.fon, (0, 0))
+            x, y = pg.mouse.get_pos()
+            b1.draw(x, y, L.L(L.naz))
+            b2.draw(x, y, L.L(L.gridon))
+            b3.draw(x, y, L.L(L.gridoff))
+            b4.draw(None, None, L.L(L.gridinfo))
+            print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
+            
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    window = 'exit'
+                elif event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                    for b in buttons:
+                        if b.get_clicked(x, y) == 1:
+                            b.clicked = 0
+                            if b.regime == 1:
+                                window = 'settings'
+                            elif b.regime == 2:
+                                self.game.grid = 1
+                                L.gridinfo = L.gridoninfo
+                                #L.grid_regime = 1
+                            elif b.regime == 3:
+                                self.game.grid = 0
+                                L.gridinfo = L.gridoffinfo
+            if window in ['exit', 'settings']:
+                Run = False
+        return window
+        
     
     def Colour_of_fon(self):
         """
@@ -312,13 +363,13 @@ class Menu():
             pg.event.get()
             self.screen.blit(self.fon, (0, 0))
             x, y = pg.mouse.get_pos()
-            b1.draw(x, y, L.naz)
-            b2.draw(x, y, L.red)
-            b3.draw(x, y, L.blue)
-            b4.draw(x, y, L.green)
-            b5.draw(x, y, L.yel)
-            b6.draw(x, y, L.wit)
-            b7.draw(None, None, L.chcol + ' ' + L.COLF)
+            b1.draw(x, y, L.L(L.naz))
+            b2.draw(x, y, L.L(L.red))
+            b3.draw(x, y, L.L(L.blue))
+            b4.draw(x, y, L.L(L.green))
+            b5.draw(x, y, L.L(L.yel))
+            b6.draw(x, y, L.L(L.wit))
+            b7.draw(None, None, L.L(L.chcol) + L.L(L.COLF))
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
             
             for event in pg.event.get():
@@ -331,12 +382,9 @@ class Menu():
                             if b.regime == 7:
                                 window = 'settings'
                             elif b.regime in self.colors:
-                                if L.lang == 'rus':
-                                    self.col_fon_game = self.colors[b.regime]
-                                    L.COLF = self.COLNAMESRUS[b.regime]
-                                elif L.lang == 'eng':
-                                    self.col_fon_game = self.colors[b.regime]
-                                    L.COLF = self.COLNAMESENG[b.regime]
+                                self.game.field_color = self.colors[b.regime]
+                                L.COLF = self.COLNAMES[b.regime]
+
             if window in ['exit', 'settings']:
                 Run = False
         return window
@@ -364,13 +412,13 @@ class Menu():
             pg.event.get()
             self.screen.blit(self.fon, (0, 0))
             x, y = pg.mouse.get_pos()
-            b1.draw(x, y, L.naz)
-            b2.draw(x, y, L.red)
-            b3.draw(x, y, L.blue)
-            b4.draw(x, y, L.green)
-            b5.draw(x, y, L.yel)
-            b6.draw(x, y, L.wit)
-            b7.draw(None, None, L.chcol + ' ' + L.COLP)
+            b1.draw(x, y, L.L(L.naz))
+            b2.draw(x, y, L.L(L.red))
+            b3.draw(x, y, L.L(L.blue))
+            b4.draw(x, y, L.L(L.green))
+            b5.draw(x, y, L.L(L.yel))
+            b6.draw(x, y, L.L(L.wit))
+            b7.draw(None, None, L.L(L.chcol) + L.L(L.COLP))
             print_text('Game of live', self.X / 4, self.Y / 10, self.screen)
             
             for event in pg.event.get():
@@ -383,12 +431,8 @@ class Menu():
                             if b.regime == 7:
                                 window = 'settings'
                             elif b.regime in self.colors:
-                                if L.lang == 'rus':
-                                    self.col_fon_game = self.colors[b.regime]
-                                    L.COLP = self.COLNAMESRUS[b.regime]
-                                elif L.lang == 'eng':
-                                    self.col_fon_game = self.colors[b.regime]
-                                    L.COLP = self.COLNAMESENG[b.regime]
+                                self.game.cell_color = self.colors[b.regime]
+                                L.COLP = self.COLNAMES[b.regime]
             if window in ['exit', 'settings']:
                 Run = False
         return window
