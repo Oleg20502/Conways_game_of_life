@@ -3,7 +3,7 @@ import numpy as np
 from scipy.ndimage import convolve
 import os
 import tkinter as tk
-from pygame.draw import polygon, line
+from pygame.draw import rect, line
 
 from Format_transform import load_and_transform, rle_encoder
 
@@ -149,21 +149,6 @@ class Game_functions():
         x = max(x, 0)
         x = min(x, upper_bound)
         return x
-    
-    def rect_coordinetes(self):
-        # Создание координат для каждой вершины кадждого квадратика
-        n1, m1 = self.get_mouse_index_coord(0, 0)
-        n2, m2 = self.get_mouse_index_coord(self.screen_x, self.screen_y)
-        n1, n2 = self.hanlde_bounds(n1, axis = 0), self.hanlde_bounds(n2, axis = 0)
-        m1, m2 = self.hanlde_bounds(m1, axis = 1), self.hanlde_bounds(m2, axis = 1)
-        indeses = np.asarray(self.cell_field[m1:m2,n1:n2].nonzero()).T[:,::-1]
-        m, n = indeses.shape
-        rect = np.hstack((indeses, indeses[:,0].reshape((m,1))+1, 
-                                indeses[:,1].reshape((m,1)), indeses+1, 
-                                 indeses[:,0].reshape((m,1)), indeses[:,1].reshape((m,1))+1))
-        rect[:, ::2] = self.scale * (rect[:, ::2] - self.x_index_bias + n1)+ self.x_screen_bias
-        rect[:, 1::2] = self.scale * (rect[:, 1::2] - self.y_index_bias + m1) + self.y_screen_bias
-        return rect
         
     def change_index_bias(self, x, y):
         self.x_index_bias += np.int((x - self.x_screen_bias) // self.scale)
@@ -187,14 +172,12 @@ class Game_functions():
         m1, m2 = self.hanlde_bounds(m1, axis = 1), self.hanlde_bounds(m2, axis = 1)
         indeses = np.asarray(self.cell_field[m1:m2,n1:n2].nonzero()).T[:,::-1]
         m, n = indeses.shape
-        rect = np.hstack((indeses, indeses[:,0].reshape((m,1))+1, 
-                                indeses[:,1].reshape((m,1)), indeses+1, 
-                                 indeses[:,0].reshape((m,1)), indeses[:,1].reshape((m,1))+1))
-        rect[:, ::2] = self.scale * (rect[:, ::2] - self.x_index_bias + n1)+ self.x_screen_bias
-        rect[:, 1::2] = self.scale * (rect[:, 1::2] - self.y_index_bias + m1) + self.y_screen_bias
+        coord = np.zeros((m, n))
+        coord[:, 0] = self.scale * (indeses[:, 0] - self.x_index_bias + n1)+ self.x_screen_bias
+        coord[:, 1] = self.scale * (indeses[:, 1] - self.y_index_bias + m1) + self.y_screen_bias
         # Рисуем квадратик,соответствующий каждой клетке
-        for r in rect:
-            polygon(space, color, [r[0:2], r[2:4], r[4:6], r[6:8]])
+        for c in coord:
+            rect(space, color, [c[0], c[1], 1.02*self.scale, 1.02*self.scale])
             
     def draw_grid(self, color, space):
         x_start = self.x_screen_bias % self.scale

@@ -14,7 +14,7 @@ import numpy as np
 import pygame as pg
 
 from game_functions import Game_functions
-from Menu_of_game import Menu
+from Game_menu import Menu
 
 
 def count_period(t, fps):
@@ -107,7 +107,7 @@ def life_loop(X, Y, game, M, screen):
             game.y_screen_bias += y_cur - y_start
             x_start, y_start = x_cur, y_cur
         
-        if paint and (not play1 or not play2):
+        if paint and not (play1 and play2):
             game.adjust_field()
             x_paint , y_paint = pg.mouse.get_pos()
             game.add_cell(x_paint, y_paint)
@@ -116,8 +116,8 @@ def life_loop(X, Y, game, M, screen):
             game.run()
         if counter % period_show == 0:
             game.draw_life(M.col, screen)
-            if game.scale > 3.5:
-                game.draw_grid(M.col, screen)
+            #if game.scale > 3.5:
+            #    game.draw_grid(M.col, screen)
             pg.display.update()
             screen.fill(M.col_fon_game)
     return window
