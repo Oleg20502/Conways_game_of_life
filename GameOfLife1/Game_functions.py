@@ -160,8 +160,7 @@ class Game_functions():
         #self.cell_field = life(self.cell_field)
         self.life()
         self.shrink_field()
-        print(self.cell_field.dtype)
-        
+    
     def life(self):
         """
         Просчитывает новое поколение

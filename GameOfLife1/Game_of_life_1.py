@@ -14,7 +14,7 @@ Escape - выход в меню.
 
 import pygame as pg
 
-from game_functions import Game_functions
+from Game_functions import Game_functions
 from Game_menu import Menu
 
 
