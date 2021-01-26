@@ -1,10 +1,9 @@
 import easygui
 import numpy as np
-from scipy.ndimage import convolve
 import os
-import tkinter as tk
 import pygame as pg
 from pygame.draw import rect, line
+from scipy.ndimage import convolve
 
 from Format_transform import load_and_transform, rle_encoder
 
@@ -34,7 +33,7 @@ class Game_functions():
         self.regime = 0
         self.cell_color = None
         self.field_color = None
-        self.grid_color = None
+        self.grid_color = (50, 50, 50)
         self.FPS = 20
         self.grid = 0
         
@@ -148,7 +147,8 @@ class Game_functions():
             self.field_width = 205
             self.cell_field = np.zeros((self.field_height, self.field_width))
         
-        self.set_scale()
+        self.scale = np.round(np.min([self.screen_x / self.field_width,
+                             self.screen_y / self.field_height]), 2)
     
     def run(self):
         """
@@ -174,14 +174,7 @@ class Game_functions():
         Загружает паттерн
         
         """
-        #Path = 'Patterns/diagonal.rle'
-        #Path = 'Patterns/2c5-spaceship-gun-p416.rle'
-        #root = tk.Tk()
-        #root.withdraw()
-        #Path = tk.filedialog.askopenfilename()
         Path  = easygui.fileopenbox()
-        #check = os.path.isfile(Path) and os.path.splitext(Path)[1] == '.rle'
-        #print(os.path.splitext(Path)[1] == '.rle')
         if not Path == None:
             if os.path.isfile(Path) and os.path.splitext(Path)[1] == '.rle':
                 self.cells = load_and_transform(Path)
@@ -197,14 +190,6 @@ class Game_functions():
         with open(Path + 'cell_field' + str(Game_functions.n) + '.rle', 'w') as f:
             f.write(data)
         Game_functions.n += 1
-        
-    def set_scale(self):
-        """
-        Устанавливает масштаб scale
-        
-        """
-        self.scale = np.round(np.min([self.screen_x / self.field_width,
-                             self.screen_y / self.field_height]), 2)
         
     def hanlde_bounds(self, x, axis = 0):
         """
@@ -263,15 +248,14 @@ class Game_functions():
         coord[:, 1] = self.scale * (indeses[:, 1] - self.y_index_bias + m1) + self.y_screen_bias
         # Рисуем квадратик,соответствующий каждой клетке
         for c in coord:
-            rect(self.screen, self.cell_color, [c[0], c[1], 1.02*self.scale, 1.02*self.scale])
+            rect(self.screen, self.cell_color, [c[0], c[1], int(self.scale)+1, int(self.scale)+1])
             
     def draw_grid(self):
         """
         Рисует на экране сетку. 
         
         """
-        if self.grid and self.scale > 3.5:
-            self.grid_color = self.cell_color
+        if self.grid and self.scale > 4.0:
             x_start = self.x_screen_bias % self.scale
             y_start = self.y_screen_bias % self.scale
             rect_vert_lines = np.arange(x_start, self.screen_x+0.001 + self.scale, self.scale)
@@ -286,7 +270,6 @@ class Game_functions():
     
         start_FPS = 60
         max_FPS = 250
-        Trun = 60
         Tshow = 20
         
         x_start, y_start = 0, 0
@@ -312,7 +295,6 @@ class Game_functions():
     
         while not finished:
             counter += 1
-            period_run = count_period(Trun, FPS)
             period_show = count_period(Tshow, FPS)
             clock.tick(FPS)
             for event in pg.event.get():
@@ -348,6 +330,8 @@ class Game_functions():
                         finished = True
                     elif event.key == pg.K_s:
                         self.download()
+                    elif event.key == pg.K_c:
+                        self.cell_field = 0 * self.cell_field
                
             if scroll_down:
                 x, y = pg.mouse.get_pos()
@@ -374,7 +358,7 @@ class Game_functions():
                 x_paint , y_paint = pg.mouse.get_pos()
                 self.add_cell(x_paint, y_paint)
                 
-            if counter % period_run == 0 and play1 and play2:
+            if play1 and play2:
                 self.run()
             if counter % period_show == 0:
                 self.draw_life()

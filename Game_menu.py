@@ -383,7 +383,7 @@ class Menu():
                                 window = 'settings'
                             elif b.regime in self.colors:
                                 self.game.field_color = self.colors[b.regime]
-                                L.COLF = self.COLNAMES[b.regime]
+                                L.COLF = L.COLNAMES[b.regime]
 
             if window in ['exit', 'settings']:
                 Run = False
@@ -432,7 +432,7 @@ class Menu():
                                 window = 'settings'
                             elif b.regime in self.colors:
                                 self.game.cell_color = self.colors[b.regime]
-                                L.COLP = self.COLNAMES[b.regime]
+                                L.COLP = L.COLNAMES[b.regime]
             if window in ['exit', 'settings']:
                 Run = False
         return window
