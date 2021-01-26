@@ -51,8 +51,9 @@ class Game_functions():
         self.x_screen_bias = 0
         self.y_screen_bias = 0
         
-        #self.x_start = None
-        #self.y_start = None
+        self.j_start = None
+        self.i_start = None
+        self.add = 0
         
     def broaden_field(self, border = 1):
         """
@@ -66,9 +67,8 @@ class Game_functions():
         self.y_index_bias += a
         self.x_index_bias += c
         narrow_field = self.cell_field
-        self.cell_field = np.zeros((self.field_height, self.field_width))
+        self.cell_field = np.zeros((self.field_height, self.field_width), dtype = 'int8')
         self.cell_field[a:self.field_height-b, c:self.field_width-d] = narrow_field
-        #print('Расширение поля', t.time() - t1)
     
     def shrink_field(self):
         """
@@ -93,24 +93,24 @@ class Game_functions():
         Подгоняет поле под размер экрана
         
         """
-        n1, m1 = self.get_mouse_index_coord(0, 0)
-        n2, m2 = self.get_mouse_index_coord(self.screen_x, self.screen_y)
+        n1, m1 = self.get_mouse_index_coord(-1, -1)
+        n2, m2 = self.get_mouse_index_coord(self.screen_x+1, self.screen_y+1)
         x_zero, y_zero = min(0, n1), min(0, m1)
         x_end, y_end = max(self.field_width, n2), max(self.field_height, m2)
         old_width, old_height = self.field_width, self.field_height
         self.field_width, self.field_height = x_end - x_zero, y_end - y_zero
         old_field = self.cell_field
-        self.cell_field = np.zeros((self.field_height, self.field_width))
+        self.cell_field = np.zeros((self.field_height, self.field_width), dtype = 'int8')
         self.cell_field[-y_zero: old_height-y_zero, -x_zero: old_width-x_zero] = old_field
         self.x_index_bias -= x_zero
         self.y_index_bias -= y_zero
-        
+    
     def create_random_life(self):
         """
         Создает поле, заполненное единицами и нулями случайным образом
         
         """
-        self.cell_field = np.zeros((self.field_height, self.field_width))
+        self.cell_field = np.zeros((self.field_height, self.field_width), dtype = 'int8')
         self.cell_field[1:-1,1:-1] = np.random.randint(0, 2, (self.field_height-2, self.field_width-2))
     
     def setup(self):
@@ -138,14 +138,14 @@ class Game_functions():
                 delta_y = 10
                 m, n = self.cells.shape
                 self.field_height, self.field_width = m + delta_y, n + delta_x
-                self.cell_field = np.zeros((self.field_height, self.field_width))
+                self.cell_field = np.zeros((self.field_height, self.field_width), dtype = 'int8')
                 self.cell_field[delta_y//2:-delta_y//2, delta_x//2:-delta_x//2] = self.cells                
             
         elif self.regime == 3:                # Пустое поле
             self.live = 1
             self.field_height = 105
             self.field_width = 205
-            self.cell_field = np.zeros((self.field_height, self.field_width))
+            self.cell_field = np.zeros((self.field_height, self.field_width), dtype = 'int8')
         
         self.scale = np.round(np.min([self.screen_x / self.field_width,
                              self.screen_y / self.field_height]), 2)
@@ -160,6 +160,7 @@ class Game_functions():
         #self.cell_field = life(self.cell_field)
         self.life()
         self.shrink_field()
+        print(self.cell_field.dtype)
         
     def life(self):
         """
@@ -228,15 +229,28 @@ class Game_functions():
         
         """
         j, i = self.get_mouse_index_coord(x, y)
-        if self.field_height > i >= 0 and self.field_width > j >= 0:
-            self.cell_field[i, j] = 1
-            
+        if self.add == 0:
+            self.j_start, self.i_start = j, i
+            self.add = 1
+        j_end, i_end = j, i
+        
+        if j_end - self.j_start == 0:
+            I = np.arange(self.i_start, i_end+1)
+            J = np.full(np.size(I), j_end)
+        else:
+            k = (i_end - self.i_start) / (j_end - self.j_start)
+            J = np.arange(self.j_start, j_end+1)
+            I = self.i_start + np.round(k * (J - self.j_start)).astype('int64')
+        for a in range(np.size(J)):
+            self.cell_field[I[a], J[a]] = 1
+        self.j_start, self.i_start = j_end, i_end
+        
+        
     def draw_life(self):
         """
         Отображает положение и состояния клеток на экране.
         
         """
-        # Создание координат для каждой вершины кадждого квадратика
         n1, m1 = self.get_mouse_index_coord(0, 0)
         n2, m2 = self.get_mouse_index_coord(self.screen_x, self.screen_y)
         n1, n2 = self.hanlde_bounds(n1, axis = 0), self.hanlde_bounds(n2, axis = 0)
@@ -246,7 +260,6 @@ class Game_functions():
         coord = np.zeros((m, n))
         coord[:, 0] = self.scale * (indeses[:, 0] - self.x_index_bias + n1)+ self.x_screen_bias
         coord[:, 1] = self.scale * (indeses[:, 1] - self.y_index_bias + m1) + self.y_screen_bias
-        # Рисуем квадратик,соответствующий каждой клетке
         for c in coord:
             rect(self.screen, self.cell_color, [c[0], c[1], int(self.scale)+1, int(self.scale)+1])
             
@@ -319,6 +332,7 @@ class Game_functions():
                         play2 = 1
                         FPS = start_FPS
                         paint = 0
+                        self.add = 0
                     if event.button == 4:
                         scroll_up = 1
                         
@@ -353,7 +367,7 @@ class Game_functions():
                 self.y_screen_bias += y_cur - y_start
                 x_start, y_start = x_cur, y_cur
             
-            if paint and not (play1 and play2):
+            if paint:
                 self.adjust_field()
                 x_paint , y_paint = pg.mouse.get_pos()
                 self.add_cell(x_paint, y_paint)
